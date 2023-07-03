@@ -1,8 +1,7 @@
 package com.bednarmartin.budgetmanagementsystem.controller;
 
 import com.bednarmartin.budgetmanagementsystem.service.api.ExpenseCategoryService;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateExpenseCategoryRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateExpenseCategoryRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.ExpenseCategoryRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.ExpenseCategoryResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,7 @@ public class ExpenseCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addExpenseCategory(@RequestBody CreateExpenseCategoryRequest expenseCategoryRequest) {
+    public void addExpenseCategory(@RequestBody ExpenseCategoryRequest expenseCategoryRequest) {
         expenseCategoryService.addExpenseCategory(expenseCategoryRequest);
     }
 
@@ -45,7 +44,7 @@ public class ExpenseCategoryController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateExpenseCategory(@PathVariable long id, @RequestBody UpdateExpenseCategoryRequest expenseCategoryRequest) {
+    public void updateExpenseCategory(@PathVariable long id, @RequestBody ExpenseCategoryRequest expenseCategoryRequest) {
         expenseCategoryService.updateExpenseCategory(id, expenseCategoryRequest);
     }
 }

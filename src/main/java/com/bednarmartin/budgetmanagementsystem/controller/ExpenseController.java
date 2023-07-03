@@ -1,8 +1,7 @@
 package com.bednarmartin.budgetmanagementsystem.controller;
 
 import com.bednarmartin.budgetmanagementsystem.service.api.ExpenseService;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateExpenseRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateExpenseRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.ExpenseRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.ExpenseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,7 +31,7 @@ public class ExpenseController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addExpense(@RequestBody CreateExpenseRequest expenseRequest) {
+    public void addExpense(@RequestBody ExpenseRequest expenseRequest) {
         expenseService.addExpense(expenseRequest);
     }
 
@@ -44,7 +43,7 @@ public class ExpenseController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateExpense(@PathVariable long id, @RequestBody UpdateExpenseRequest expenseRequest) {
+    public void updateExpense(@PathVariable long id, @RequestBody ExpenseRequest expenseRequest) {
         expenseService.updateExpense(id, expenseRequest);
     }
 

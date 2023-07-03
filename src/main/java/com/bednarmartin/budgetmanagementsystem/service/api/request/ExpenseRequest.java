@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateExpenseRequest {
+public class ExpenseRequest {
 
     private BigDecimal amount;
 

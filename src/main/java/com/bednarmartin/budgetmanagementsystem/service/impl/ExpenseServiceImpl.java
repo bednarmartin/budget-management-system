@@ -6,8 +6,7 @@ import com.bednarmartin.budgetmanagementsystem.db.repository.ExpenseRepository;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
 import com.bednarmartin.budgetmanagementsystem.service.api.ExpenseCategoryService;
 import com.bednarmartin.budgetmanagementsystem.service.api.ExpenseService;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateExpenseRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateExpenseRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.ExpenseRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.ExpenseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseCategoryService expenseCategoryService;
 
     @Override
-    public void addExpense(CreateExpenseRequest expenseRequest) {
+    public void addExpense(ExpenseRequest expenseRequest) {
         log.debug("addExpense with parameter: {} called", expenseRequest);
 
         ExpenseCategory expenseCategory = expenseCategoryService.getExpenseCategoryByName(expenseRequest.getCategoryName());
@@ -47,24 +46,21 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public void updateExpense(long id, UpdateExpenseRequest expenseRequest) {
+    public void updateExpense(long id, ExpenseRequest expenseRequest) {
         log.debug("updateExpense with parameters: {}, {} called", id, expenseRequest);
 
-        ExpenseCategory expenseCategory = expenseCategoryService.getExpenseCategoryByName(expenseRequest.getCategoryName());
+        ExpenseCategory expenseCategory = expenseCategoryService.getExpenseCategoryByName(
+                expenseRequest.getCategoryName());
 
         LocalDateTime actualTime = LocalDateTime.now();
-        Expense expense = Expense.builder()
-                .id(id)
-                .amount(expenseRequest.getAmount())
-                .category(expenseCategory)
-                .description(expenseRequest.getDescription())
-                .dateCreated(expenseRequest.getDateCreated())
-                .dateUpdated(actualTime)
-                .build();
-        repository.save(expense);
+        repository.updateExpenseCategoryById(id,
+                expenseRequest.getAmount(),
+                expenseRequest.getDescription(),
+                expenseCategory,
+                actualTime);
 
-        log.info("Expense with id: {} updated", expense.getId());
-        log.debug("Expense: {} updated", expense);
+        log.info("Expense with id: {} updated", id);
+        log.debug("Expense: {} updated", expenseRequest);
     }
 
     @Override

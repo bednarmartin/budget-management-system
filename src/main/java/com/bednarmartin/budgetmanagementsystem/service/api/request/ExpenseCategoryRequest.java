@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateExpenseCategoryRequest {
+public class ExpenseCategoryRequest {
 
     private String name;
 }

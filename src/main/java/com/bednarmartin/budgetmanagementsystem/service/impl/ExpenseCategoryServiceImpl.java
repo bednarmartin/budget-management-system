@@ -4,8 +4,7 @@ import com.bednarmartin.budgetmanagementsystem.db.model.ExpenseCategory;
 import com.bednarmartin.budgetmanagementsystem.db.repository.ExpenseCategoryRepository;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
 import com.bednarmartin.budgetmanagementsystem.service.api.ExpenseCategoryService;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateExpenseCategoryRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateExpenseCategoryRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.ExpenseCategoryRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.ExpenseCategoryResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class ExpenseCategoryServiceImpl implements ExpenseCategoryService {
 
 
     @Override
-    public void addExpenseCategory(CreateExpenseCategoryRequest expenseCategoryRequest) {
+    public void addExpenseCategory(ExpenseCategoryRequest expenseCategoryRequest) {
         log.debug("addExpenseCategory with parameter: {} called", expenseCategoryRequest);
 
         LocalDateTime actualTime = LocalDateTime.now();
@@ -41,22 +40,14 @@ public class ExpenseCategoryServiceImpl implements ExpenseCategoryService {
     }
 
     @Override
-    public void updateExpenseCategory(long id, UpdateExpenseCategoryRequest expenseCategoryRequest) {
+    public void updateExpenseCategory(long id, ExpenseCategoryRequest expenseCategoryRequest) {
         log.debug("updateExpenseCategory with parameters: {}, {} called", id, expenseCategoryRequest);
 
         LocalDateTime actualTime = LocalDateTime.now();
-
-        ExpenseCategory expenseCategory = ExpenseCategory.builder()
-                .id(id)
-                .name(expenseCategoryRequest.getName())
-                .dateCreated(expenseCategoryRequest.getDateCreated())
-                .dateUpdated(actualTime)
-                .build();
-
-        repository.save(expenseCategory);
+        repository.updateExpenseCategoryById(id, expenseCategoryRequest.getName(), actualTime);
 
         log.info("ExpenseCategory with id: {} updated", id);
-        log.debug("ExpenseCategory: {} updated", expenseCategory);
+        log.debug("ExpenseCategory: {} updated", expenseCategoryRequest);
     }
 
     @Override
@@ -64,6 +55,13 @@ public class ExpenseCategoryServiceImpl implements ExpenseCategoryService {
         log.debug("deleteExpenseCategoryById with parameter: {} called", id);
         repository.deleteById(id);
         log.info("ExpenseCategory with id: {} deleted", id);
+    }
+
+    @Override
+    public void deleteExpenseCategoryByName(String name) {
+        log.debug("deleteExpenseCategoryByName with parameter: {} called", name);
+        repository.deleteByName(name);
+        log.info("ExpenseCategory with name: {} deleted", name);
     }
 
     @Override

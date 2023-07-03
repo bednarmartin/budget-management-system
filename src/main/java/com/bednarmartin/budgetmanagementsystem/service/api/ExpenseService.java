@@ -1,16 +1,16 @@
 package com.bednarmartin.budgetmanagementsystem.service.api;
 
-import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateExpenseRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateExpenseRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.ExpenseRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.ExpenseResponse;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public interface ExpenseService {
 
-    void addExpense(CreateExpenseRequest createExpenseRequest);
-
-    void updateExpense(long id, UpdateExpenseRequest expenseRequest);
+    void addExpense(ExpenseRequest expenseRequest);
+    @Transactional
+    void updateExpense(long id, ExpenseRequest expenseRequest);
 
     void deleteExpenseById(long id);
 

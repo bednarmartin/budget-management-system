@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("""
             UPDATE Expense SET amount = :amount, description = :description, category = :category,
             dateUpdated = :datetime WHERE id = :id
             """)
-    void updateExpenseCategoryById(@Param("id") long id,
-                                   @Param("amount") BigDecimal amount,
-                                   @Param("description") String description,
-                                   @Param("category") ExpenseCategory category,
-                                   @Param("datetime") LocalDateTime dateTime);
+    void updateExpenseById(@Param("id") long id,
+                           @Param("amount") BigDecimal amount,
+                           @Param("description") String description,
+                           @Param("category") ExpenseCategory category,
+                           @Param("datetime") LocalDateTime dateTime);
 }

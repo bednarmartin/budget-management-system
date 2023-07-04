@@ -1,12 +1,13 @@
 package com.bednarmartin.budgetmanagementsystem.controller;
 
 import com.bednarmartin.budgetmanagementsystem.service.api.request.ExpenseCategoryRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.response.ExpenseCategoryResponse;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.ExpenseRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.response.ExpenseResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -23,38 +25,53 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-class ExpenseCategoryRESTControllerTests {
+public class ExpenseRESTControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
 
-    private static ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
-    private final String URL = "/api/expense/category";
+    private final String URL = "/api/expense";
 
-
-    @BeforeAll
-    public static void init() {
+    @BeforeEach
+    public void init() throws Exception {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+
+        String categoryName = "Groceries";
+
+        ExpenseCategoryRequest request = ExpenseCategoryRequest.builder()
+                .name(categoryName)
+                .build();
+
+        // Create a new Expense Category
+        mockMvc.perform(post(URL + "/category")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated());
 
     }
 
     @Test
-    void testAddExpenseCategory() throws Exception {
-        String name = "Groceries";
+    void testAddExpense() throws Exception {
+        String categoryName = "Groceries";
+        String description = "Food";
+        BigDecimal price = BigDecimal.valueOf(10.59);
 
-        ExpenseCategoryRequest request = ExpenseCategoryRequest.builder()
-                .name(name)
+        ExpenseRequest request = ExpenseRequest.builder()
+                .amount(price)
+                .description(description)
+                .categoryName(categoryName)
                 .build();
 
-        // Create a new Expense Category
+        // Create a new Expense
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
 
-        // Get Expense Category
+        // Get Expense
         String responseJson = mockMvc.perform(get(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -62,20 +79,26 @@ class ExpenseCategoryRESTControllerTests {
                 .getResponse()
                 .getContentAsString();
 
-        ExpenseCategoryResponse response = objectMapper.readValue(responseJson, ExpenseCategoryResponse.class);
+        ExpenseResponse response = objectMapper.readValue(responseJson, ExpenseResponse.class);
 
         Assertions.assertEquals(1, response.getId());
-        Assertions.assertEquals(name, response.getName());
+        Assertions.assertEquals(categoryName, response.getCategory().getName());
+        Assertions.assertEquals(description, response.getDescription());
+        Assertions.assertEquals(price, response.getAmount());
 
     }
 
     @Test
-    void testAddMoreExpenseCategories() throws Exception {
-        String[] names = {"Groceries", "Utilities", "Health"};
+    void testAddMoreExpenses() throws Exception {
+        String[] descriptions = {"Food", "Soda", "Candy"};
+        BigDecimal[] prices = {BigDecimal.valueOf(53.69), BigDecimal.valueOf(68.96), BigDecimal.valueOf(12.12)};
+        String categoryName = "Groceries";
 
-        for (String name : names) {
-            ExpenseCategoryRequest request = ExpenseCategoryRequest.builder()
-                    .name(name)
+        for (int i = 0; i < descriptions.length; i++) {
+            ExpenseRequest request = ExpenseRequest.builder()
+                    .categoryName(categoryName)
+                    .description(descriptions[i])
+                    .amount(prices[i])
                     .build();
 
             // Create a new Expense Category
@@ -87,52 +110,59 @@ class ExpenseCategoryRESTControllerTests {
 
         // Get all Expense Categories
 
-        String expenseCategoriesJson = mockMvc.perform(get(URL)
+        String expenseJson = mockMvc.perform(get(URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        List<ExpenseCategoryResponse> responseList = objectMapper.readValue(
-                expenseCategoriesJson, new TypeReference<>() {
-                });
+        List<ExpenseResponse> responseList = objectMapper.readValue(expenseJson, new TypeReference<>() {
+        });
 
 
         Assertions.assertEquals(3, responseList.size());
         for (int i = 0; i < responseList.size(); i++) {
-            Assertions.assertEquals(names[i], responseList.get(i).getName());
+            Assertions.assertEquals(descriptions[i], responseList.get(i).getDescription());
+            Assertions.assertEquals(prices[i], responseList.get(i).getAmount());
+            Assertions.assertEquals(categoryName, responseList.get(i).getCategory().getName());
         }
 
     }
 
     @Test
-    void testUpdateExpenseCategory() throws Exception {
-        String name = "Groceries";
+    void testUpdateExpense() throws Exception {
+        String categoryName = "Groceries";
+        String description = "Food";
+        BigDecimal price = BigDecimal.valueOf(10.59);
 
-        ExpenseCategoryRequest request = ExpenseCategoryRequest.builder()
-                .name(name)
+        ExpenseRequest request = ExpenseRequest.builder()
+                .amount(price)
+                .description(description)
+                .categoryName(categoryName)
                 .build();
 
-        // Create a new Expense Category
+        // Create a new Expense
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
 
 
-        String newName = "Utilities";
-        ExpenseCategoryRequest updateRequest = ExpenseCategoryRequest.builder()
-                .name(newName)
+        BigDecimal newPrice = BigDecimal.valueOf(12.59);
+        ExpenseRequest updateRequest = ExpenseRequest.builder()
+                .amount(newPrice)
+                .description(description)
+                .categoryName(categoryName)
                 .build();
 
-        // Update the Expense Category
+        // Update the Expense
         mockMvc.perform(put(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk());
 
-        // Get updated Expense Category
+        // Get updated Expense
         String responseJson = mockMvc.perform(get(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -140,44 +170,48 @@ class ExpenseCategoryRESTControllerTests {
                 .getResponse()
                 .getContentAsString();
 
-        ExpenseCategoryResponse response = objectMapper.readValue(responseJson, ExpenseCategoryResponse.class);
+        ExpenseResponse response = objectMapper.readValue(responseJson, ExpenseResponse.class);
 
         Assertions.assertEquals(1, response.getId());
-        Assertions.assertEquals(newName, response.getName());
+        Assertions.assertEquals(categoryName, response.getCategory().getName());
+        Assertions.assertEquals(newPrice, response.getAmount());
+        Assertions.assertEquals(description, response.getDescription());
     }
 
     @Test
-    void testDeleteExpenseCategory() throws Exception {
-        String name = "Groceries";
+    void testDeleteExpense() throws Exception {
+        String categoryName = "Groceries";
+        String description = "Food";
+        BigDecimal price = BigDecimal.valueOf(10.59);
 
-        ExpenseCategoryRequest request = ExpenseCategoryRequest.builder()
-                .name(name)
+        ExpenseRequest request = ExpenseRequest.builder()
+                .amount(price)
+                .description(description)
+                .categoryName(categoryName)
                 .build();
 
-        // Create a new Expense Category
+        // Create a new Expense
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
 
 
-        // Delete the Expense Category
+        // Delete the Expense
         mockMvc.perform(delete(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        // Get all Expense Categories
-        String expenseCategoriesJson = mockMvc.perform(get(URL)
+        // Get all Expenses
+        String expenseJson = mockMvc.perform(get(URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        List<ExpenseCategoryResponse> responseList = objectMapper.readValue(
-                expenseCategoriesJson, new TypeReference<>() {
-                });
-
+        List<ExpenseResponse> responseList = objectMapper.readValue(expenseJson, new TypeReference<>() {
+        });
 
         Assertions.assertEquals(0, responseList.size());
     }

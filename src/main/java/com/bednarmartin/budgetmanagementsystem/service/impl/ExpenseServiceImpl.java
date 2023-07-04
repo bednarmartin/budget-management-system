@@ -53,7 +53,7 @@ public class ExpenseServiceImpl implements ExpenseService {
                 expenseRequest.getCategoryName());
 
         LocalDateTime actualTime = LocalDateTime.now();
-        repository.updateExpenseCategoryById(id,
+        repository.updateExpenseById(id,
                 expenseRequest.getAmount(),
                 expenseRequest.getDescription(),
                 expenseCategory,

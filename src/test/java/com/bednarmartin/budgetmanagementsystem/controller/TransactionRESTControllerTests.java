@@ -1,8 +1,9 @@
 package com.bednarmartin.budgetmanagementsystem.controller;
 
-import com.bednarmartin.budgetmanagementsystem.service.api.request.ExpenseCategoryRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.ExpenseRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.response.ExpenseResponse;
+import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.response.TransactionResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -25,14 +26,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-public class ExpenseRESTControllerTests {
+public class TransactionRESTControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     private ObjectMapper objectMapper;
 
-    private final String URL = "/api/expense";
+    private final String URL = "/api/transaction";
 
     @BeforeEach
     public void init() throws Exception {
@@ -41,12 +42,13 @@ public class ExpenseRESTControllerTests {
 
         String categoryName = "Groceries";
 
-        ExpenseCategoryRequest request = ExpenseCategoryRequest.builder()
+        CategoryRequest request = CategoryRequest.builder()
                 .name(categoryName)
+                .transactionType(TransactionType.EXPENSE)
                 .build();
 
         // Create a new Expense Category
-        mockMvc.perform(post(URL + "/category")
+        mockMvc.perform(post("/api/category")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
@@ -54,15 +56,16 @@ public class ExpenseRESTControllerTests {
     }
 
     @Test
-    void testAddExpense() throws Exception {
+    void testAddTransaction() throws Exception {
         String categoryName = "Groceries";
         String description = "Food";
         BigDecimal price = BigDecimal.valueOf(10.59);
 
-        ExpenseRequest request = ExpenseRequest.builder()
+        TransactionRequest request = TransactionRequest.builder()
                 .amount(price)
                 .description(description)
                 .categoryName(categoryName)
+                .type(TransactionType.EXPENSE)
                 .build();
 
         // Create a new Expense
@@ -79,26 +82,28 @@ public class ExpenseRESTControllerTests {
                 .getResponse()
                 .getContentAsString();
 
-        ExpenseResponse response = objectMapper.readValue(responseJson, ExpenseResponse.class);
+        TransactionResponse response = objectMapper.readValue(responseJson, TransactionResponse.class);
 
         Assertions.assertEquals(1, response.getId());
         Assertions.assertEquals(categoryName, response.getCategory().getName());
         Assertions.assertEquals(description, response.getDescription());
+        Assertions.assertEquals(TransactionType.EXPENSE, response.getType());
         Assertions.assertEquals(price, response.getAmount());
 
     }
 
     @Test
-    void testAddMoreExpenses() throws Exception {
+    void testAddMoreTransactions() throws Exception {
         String[] descriptions = {"Food", "Soda", "Candy"};
         BigDecimal[] prices = {BigDecimal.valueOf(53.69), BigDecimal.valueOf(68.96), BigDecimal.valueOf(12.12)};
         String categoryName = "Groceries";
 
         for (int i = 0; i < descriptions.length; i++) {
-            ExpenseRequest request = ExpenseRequest.builder()
+            TransactionRequest request = TransactionRequest.builder()
                     .categoryName(categoryName)
                     .description(descriptions[i])
                     .amount(prices[i])
+                    .type(TransactionType.EXPENSE)
                     .build();
 
             // Create a new Expense Category
@@ -117,7 +122,7 @@ public class ExpenseRESTControllerTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<ExpenseResponse> responseList = objectMapper.readValue(expenseJson, new TypeReference<>() {
+        List<TransactionResponse> responseList = objectMapper.readValue(expenseJson, new TypeReference<>() {
         });
 
 
@@ -126,20 +131,22 @@ public class ExpenseRESTControllerTests {
             Assertions.assertEquals(descriptions[i], responseList.get(i).getDescription());
             Assertions.assertEquals(prices[i], responseList.get(i).getAmount());
             Assertions.assertEquals(categoryName, responseList.get(i).getCategory().getName());
+            Assertions.assertEquals(TransactionType.EXPENSE, responseList.get(i).getType());
         }
 
     }
 
     @Test
-    void testUpdateExpense() throws Exception {
+    void testUpdateTransaction() throws Exception {
         String categoryName = "Groceries";
         String description = "Food";
         BigDecimal price = BigDecimal.valueOf(10.59);
 
-        ExpenseRequest request = ExpenseRequest.builder()
+        TransactionRequest request = TransactionRequest.builder()
                 .amount(price)
                 .description(description)
                 .categoryName(categoryName)
+                .type(TransactionType.EXPENSE)
                 .build();
 
         // Create a new Expense
@@ -150,10 +157,11 @@ public class ExpenseRESTControllerTests {
 
 
         BigDecimal newPrice = BigDecimal.valueOf(12.59);
-        ExpenseRequest updateRequest = ExpenseRequest.builder()
+        TransactionRequest updateRequest = TransactionRequest.builder()
                 .amount(newPrice)
                 .description(description)
                 .categoryName(categoryName)
+                .type(TransactionType.EXPENSE)
                 .build();
 
         // Update the Expense
@@ -170,24 +178,26 @@ public class ExpenseRESTControllerTests {
                 .getResponse()
                 .getContentAsString();
 
-        ExpenseResponse response = objectMapper.readValue(responseJson, ExpenseResponse.class);
+        TransactionResponse response = objectMapper.readValue(responseJson, TransactionResponse.class);
 
         Assertions.assertEquals(1, response.getId());
         Assertions.assertEquals(categoryName, response.getCategory().getName());
         Assertions.assertEquals(newPrice, response.getAmount());
+        Assertions.assertEquals(TransactionType.EXPENSE, response.getType());
         Assertions.assertEquals(description, response.getDescription());
     }
 
     @Test
-    void testDeleteExpense() throws Exception {
+    void testDeleteTransaction() throws Exception {
         String categoryName = "Groceries";
         String description = "Food";
         BigDecimal price = BigDecimal.valueOf(10.59);
 
-        ExpenseRequest request = ExpenseRequest.builder()
+        TransactionRequest request = TransactionRequest.builder()
                 .amount(price)
                 .description(description)
                 .categoryName(categoryName)
+                .type(TransactionType.EXPENSE)
                 .build();
 
         // Create a new Expense
@@ -210,7 +220,7 @@ public class ExpenseRESTControllerTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<ExpenseResponse> responseList = objectMapper.readValue(expenseJson, new TypeReference<>() {
+        List<TransactionResponse> responseList = objectMapper.readValue(expenseJson, new TypeReference<>() {
         });
 
         Assertions.assertEquals(0, responseList.size());

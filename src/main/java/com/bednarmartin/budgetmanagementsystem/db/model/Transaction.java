@@ -1,5 +1,6 @@
 package com.bednarmartin.budgetmanagementsystem.db.model;
 
+import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,8 +12,8 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @Entity
-@Table(name = "expenses")
-public class Expense {
+@Table(name = "transactions")
+public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -21,9 +22,11 @@ public class Expense {
 
     private String description;
 
+    private TransactionType type;
+
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private ExpenseCategory category;
+    private Category category;
 
     @Column(name = "date_created")
     private LocalDateTime dateCreated;

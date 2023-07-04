@@ -1,6 +1,7 @@
 package com.bednarmartin.budgetmanagementsystem.service.api.response;
 
-import com.bednarmartin.budgetmanagementsystem.db.model.ExpenseCategory;
+import com.bednarmartin.budgetmanagementsystem.db.model.Category;
+import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,11 +9,12 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExpenseResponse {
+public class TransactionResponse {
 
     private Long id;
 
@@ -20,7 +22,9 @@ public class ExpenseResponse {
 
     private String description;
 
-    private ExpenseCategory category;
+    private Category category;
+
+    private TransactionType type;
 
     private LocalDateTime dateCreated;
 }

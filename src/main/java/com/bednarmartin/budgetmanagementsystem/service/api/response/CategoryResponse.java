@@ -1,5 +1,6 @@
 package com.bednarmartin.budgetmanagementsystem.service.api.response;
 
+import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +12,13 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExpenseCategoryResponse {
+public class CategoryResponse {
 
     private Long id;
 
     private String name;
+
+    private TransactionType transactionType;
 
     private LocalDateTime dateCreated;
 }

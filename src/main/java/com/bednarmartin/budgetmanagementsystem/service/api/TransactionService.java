@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface TransactionService {
 
-    void addTransaction(TransactionRequest transactionRequest);
+    void addTransaction(TransactionRequest request);
     @Transactional
-    void updateTransaction(long id, TransactionRequest transactionRequest);
+    void updateTransaction(long id, TransactionRequest request);
 
     void deleteTransactionById(long id);
 

@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface CategoryService {
 
-    void addCategory(CategoryRequest categoryRequest);
+    void addCategory(CategoryRequest request);
     @Transactional
-    void updateCategory(long id, CategoryRequest categoryRequest);
+    void updateCategory(long id, CategoryRequest request);
 
     void deleteCategoryById(long id);
     @Transactional

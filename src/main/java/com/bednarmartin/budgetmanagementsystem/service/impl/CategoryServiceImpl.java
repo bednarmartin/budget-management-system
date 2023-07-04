@@ -23,13 +23,13 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public void addCategory(CategoryRequest categoryRequest) {
-        log.debug("addCategory with parameter: {} called", categoryRequest);
+    public void addCategory(CategoryRequest request) {
+        log.debug("addCategory with parameter: {} called", request);
 
         LocalDateTime actualTime = LocalDateTime.now();
         Category category = Category.builder()
-                .name(categoryRequest.getName())
-                .transactionType(categoryRequest.getTransactionType())
+                .name(request.getName())
+                .transactionType(request.getTransactionType())
                 .dateCreated(actualTime)
                 .dateUpdated(actualTime)
                 .build();
@@ -41,14 +41,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void updateCategory(long id, CategoryRequest categoryRequest) {
-        log.debug("updateCategory with parameters: {}, {} called", id, categoryRequest);
+    public void updateCategory(long id, CategoryRequest request) {
+        log.debug("updateCategory with parameters: {}, {} called", id, request);
 
         LocalDateTime actualTime = LocalDateTime.now();
-        repository.updateCategoryById(id, categoryRequest.getName(), categoryRequest.getTransactionType(), actualTime);
+        repository.updateCategoryById(id, request.getName(), request.getTransactionType(), actualTime);
 
         log.info("Category with id: {} updated", id);
-        log.debug("Category: {} updated", categoryRequest);
+        log.debug("Category: {} updated", request);
     }
 
     @Override

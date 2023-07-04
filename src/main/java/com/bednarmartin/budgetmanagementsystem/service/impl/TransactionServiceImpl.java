@@ -26,21 +26,21 @@ public class TransactionServiceImpl implements TransactionService {
     private final CategoryService categoryService;
 
     @Override
-    public void addTransaction(TransactionRequest transactionRequest) {
-        log.debug("addTransaction with parameter: {} called", transactionRequest);
+    public void addTransaction(TransactionRequest request) {
+        log.debug("addTransaction with parameter: {} called", request);
 
-        Category category = categoryService.getCategoryByName(transactionRequest.getCategoryName());
+        Category category = categoryService.getCategoryByName(request.getCategoryName());
 
-        checkTransactionTypes(transactionRequest, category);
+        checkTransactionTypes(request, category);
 
         LocalDateTime actualTime = LocalDateTime.now();
         Transaction transaction = Transaction.builder()
-                .amount(transactionRequest.getAmount())
+                .amount(request.getAmount())
                 .category(category)
-                .description(transactionRequest.getDescription())
+                .description(request.getDescription())
                 .dateCreated(actualTime)
                 .dateUpdated(actualTime)
-                .type(transactionRequest.getType())
+                .type(request.getType())
                 .build();
         repository.save(transaction);
 
@@ -51,24 +51,24 @@ public class TransactionServiceImpl implements TransactionService {
 
 
     @Override
-    public void updateTransaction(long id, TransactionRequest transactionRequest) {
-        log.debug("updateTransaction with parameters: {}, {} called", id, transactionRequest);
+    public void updateTransaction(long id, TransactionRequest request) {
+        log.debug("updateTransaction with parameters: {}, {} called", id, request);
 
         Category category = categoryService.getCategoryByName(
-                transactionRequest.getCategoryName());
+                request.getCategoryName());
 
-        checkTransactionTypes(transactionRequest, category);
+        checkTransactionTypes(request, category);
 
         LocalDateTime actualTime = LocalDateTime.now();
         repository.updateTransactionById(id,
-                transactionRequest.getAmount(),
-                transactionRequest.getDescription(),
+                request.getAmount(),
+                request.getDescription(),
                 category,
-                transactionRequest.getType(),
+                request.getType(),
                 actualTime);
 
         log.info("Transaction with id: {} updated", id);
-        log.debug("Transaction: {} updated", transactionRequest);
+        log.debug("Transaction: {} updated", request);
     }
 
     @Override

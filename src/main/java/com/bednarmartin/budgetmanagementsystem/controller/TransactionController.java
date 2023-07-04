@@ -31,8 +31,8 @@ public class TransactionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addTransaction(@RequestBody TransactionRequest transactionRequest) {
-        transactionService.addTransaction(transactionRequest);
+    public void addTransaction(@RequestBody TransactionRequest request) {
+        transactionService.addTransaction(request);
     }
 
     @DeleteMapping("/{id}")
@@ -43,8 +43,8 @@ public class TransactionController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateTransaction(@PathVariable long id, @RequestBody TransactionRequest transactionRequest) {
-        transactionService.updateTransaction(id, transactionRequest);
+    public void updateTransaction(@PathVariable long id, @RequestBody TransactionRequest request) {
+        transactionService.updateTransaction(id, request);
     }
 
 

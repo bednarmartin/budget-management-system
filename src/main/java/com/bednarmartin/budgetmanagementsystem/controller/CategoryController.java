@@ -32,8 +32,8 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addCategory(@RequestBody CategoryRequest categoryRequest) {
-        categoryService.addCategory(categoryRequest);
+    public void addCategory(@RequestBody CategoryRequest request) {
+        categoryService.addCategory(request);
     }
 
     @DeleteMapping("/{id}")
@@ -44,8 +44,8 @@ public class CategoryController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateCategory(@PathVariable long id, @RequestBody CategoryRequest categoryRequest) {
-        categoryService.updateCategory(id, categoryRequest);
+    public void updateCategory(@PathVariable long id, @RequestBody CategoryRequest request) {
+        categoryService.updateCategory(id, request);
     }
 }
 

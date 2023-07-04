@@ -1,0 +1,16 @@
+package com.bednarmartin.budgetmanagementsystem.db.repository;
+
+import com.bednarmartin.budgetmanagementsystem.db.model.AccountType;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+
+public interface AccountTypeRepository extends JpaRepository<AccountType, Long> {
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE AccountType SET name = :name WHERE id = :id")
+    void updateAccountTypeById(@Param("id") long id,
+                               @Param("name") String name);
+}

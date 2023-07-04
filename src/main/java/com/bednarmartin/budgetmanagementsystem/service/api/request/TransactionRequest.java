@@ -1,5 +1,6 @@
 package com.bednarmartin.budgetmanagementsystem.service.api.request;
 
+import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -8,12 +9,14 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExpenseRequest {
+public class TransactionRequest {
 
     private BigDecimal amount;
 
     private String description;
 
     private String categoryName;
+
+    private TransactionType type;
 
 }

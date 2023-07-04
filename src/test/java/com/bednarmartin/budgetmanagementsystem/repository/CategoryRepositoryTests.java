@@ -1,7 +1,8 @@
 package com.bednarmartin.budgetmanagementsystem.repository;
 
-import com.bednarmartin.budgetmanagementsystem.db.model.ExpenseCategory;
-import com.bednarmartin.budgetmanagementsystem.db.repository.ExpenseCategoryRepository;
+import com.bednarmartin.budgetmanagementsystem.db.model.Category;
+import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
+import com.bednarmartin.budgetmanagementsystem.db.repository.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,40 +15,43 @@ import java.util.Optional;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class ExpenseCategoryRepositoryTests {
+public class CategoryRepositoryTests {
 
     @Autowired
-    private ExpenseCategoryRepository repository;
+    private CategoryRepository repository;
 
     @Test
     @Transactional
-    public void testUpdateExpenseCategoryById() throws InterruptedException {
+    public void testUpdateCategoryById() throws InterruptedException {
         LocalDateTime dateTime = LocalDateTime.now();
-        ExpenseCategory expenseCategory = ExpenseCategory.builder()
+        Category category = Category.builder()
                 .name("Utilities")
+                .transactionType(TransactionType.EXPENSE)
                 .dateUpdated(dateTime)
                 .dateCreated(dateTime)
                 .build();
-        repository.save(expenseCategory);
+        repository.save(category);
 
         Thread.sleep(1000);
         LocalDateTime newDateTime = LocalDateTime.now();
         String newName = "Groceries";
-        repository.updateExpenseCategoryById(
-                expenseCategory.getId(),
+        repository.updateCategoryById(
+                category.getId(),
                 newName,
+                TransactionType.EXPENSE,
                 newDateTime
         );
 
-        Optional<ExpenseCategory> updatedExpenseCategoryOptional = repository.findById(expenseCategory.getId());
+        Optional<Category> updatedExpenseCategoryOptional = repository.findById(category.getId());
         Assertions.assertTrue(updatedExpenseCategoryOptional.isPresent());
-        ExpenseCategory updatedExpenseCategory = updatedExpenseCategoryOptional.get();
-        LocalDateTime dateCreated = updatedExpenseCategory.getDateCreated();
-        LocalDateTime dateUpdated = updatedExpenseCategory.getDateUpdated();
+        Category updatedCategory = updatedExpenseCategoryOptional.get();
+        LocalDateTime dateCreated = updatedCategory.getDateCreated();
+        LocalDateTime dateUpdated = updatedCategory.getDateUpdated();
 
-        Assertions.assertEquals(expenseCategory.getId(), updatedExpenseCategory.getId());
+        Assertions.assertEquals(category.getId(), updatedCategory.getId());
         Assertions.assertEquals(dateTime.minusNanos(dateTime.getNano()), dateCreated.minusNanos(dateCreated.getNano()));
-        Assertions.assertEquals(newName, updatedExpenseCategory.getName());
+        Assertions.assertEquals(newName, updatedCategory.getName());
+        Assertions.assertEquals(TransactionType.EXPENSE, updatedCategory.getTransactionType());
         Assertions.assertEquals(
                 newDateTime.minusNanos(newDateTime.getNano()),
                 dateUpdated.minusNanos(dateUpdated.getNano()));

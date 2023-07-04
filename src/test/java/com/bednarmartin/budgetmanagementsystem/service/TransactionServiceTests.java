@@ -1,6 +1,7 @@
 package com.bednarmartin.budgetmanagementsystem.service;
 
 import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
+import com.bednarmartin.budgetmanagementsystem.exception.TransactionTypeMismatchException;
 import com.bednarmartin.budgetmanagementsystem.service.api.CategoryService;
 import com.bednarmartin.budgetmanagementsystem.service.api.TransactionService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
@@ -149,6 +150,39 @@ public class TransactionServiceTests {
 
         Assertions.assertTrue(responses.isEmpty());
 
+    }
+
+    @Test
+    public void testAddingTransactionWithTypeMismatch() {
+        TransactionRequest request = TransactionRequest.builder()
+                .amount(BigDecimal.valueOf(51.99))
+                .description("Electricity bill")
+                .categoryName("Utilities")
+                .type(TransactionType.INCOME)
+                .build();
+
+        Assertions.assertThrows(TransactionTypeMismatchException.class, () -> transactionService.addTransaction(request));
+    }
+
+    @Test
+    public void testUpdatingTransactionWithTypeMismatch() {
+        TransactionRequest request = TransactionRequest.builder()
+                .amount(BigDecimal.valueOf(51.99))
+                .description("Electricity bill")
+                .categoryName("Utilities")
+                .type(TransactionType.EXPENSE)
+                .build();
+        transactionService.addTransaction(request);
+        TransactionResponse response = transactionService.getAllTransactions().get(0);
+
+        TransactionRequest updateRequest = TransactionRequest.builder()
+                .categoryName("Utilities")
+                .description("Candy")
+                .amount(BigDecimal.valueOf(23.19))
+                .type(TransactionType.INCOME)
+                .build();
+        Assertions.assertThrows(TransactionTypeMismatchException.class,
+                () -> transactionService.updateTransaction(response.getId(), updateRequest));
     }
 
 }

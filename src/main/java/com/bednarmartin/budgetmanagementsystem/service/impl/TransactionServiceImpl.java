@@ -4,6 +4,7 @@ import com.bednarmartin.budgetmanagementsystem.db.model.Transaction;
 import com.bednarmartin.budgetmanagementsystem.db.model.Category;
 import com.bednarmartin.budgetmanagementsystem.db.repository.TransactionRepository;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
+import com.bednarmartin.budgetmanagementsystem.exception.TransactionTypeMismatchException;
 import com.bednarmartin.budgetmanagementsystem.service.api.CategoryService;
 import com.bednarmartin.budgetmanagementsystem.service.api.TransactionService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
@@ -30,6 +31,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         Category category = categoryService.getCategoryByName(transactionRequest.getCategoryName());
 
+        checkTransactionTypes(transactionRequest, category);
+
         LocalDateTime actualTime = LocalDateTime.now();
         Transaction transaction = Transaction.builder()
                 .amount(transactionRequest.getAmount())
@@ -46,12 +49,15 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
+
     @Override
     public void updateTransaction(long id, TransactionRequest transactionRequest) {
         log.debug("updateTransaction with parameters: {}, {} called", id, transactionRequest);
 
         Category category = categoryService.getCategoryByName(
                 transactionRequest.getCategoryName());
+
+        checkTransactionTypes(transactionRequest, category);
 
         LocalDateTime actualTime = LocalDateTime.now();
         repository.updateTransactionById(id,
@@ -106,4 +112,10 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
     }
 
+    private void checkTransactionTypes(TransactionRequest transactionRequest, Category category) {
+        boolean notSameTransactionTypes = !category.getTransactionType().equals(transactionRequest.getType());
+        if (notSameTransactionTypes) {
+            throw new TransactionTypeMismatchException("Transaction types of request and category must be the same!");
+        }
+    }
 }

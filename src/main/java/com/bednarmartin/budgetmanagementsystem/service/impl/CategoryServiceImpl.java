@@ -78,7 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse getCategoryById(long id) {
         log.debug("getCategoryById with parameter: {} called", id);
 
-        String errorMessage = "Such ExpenseCategory not in database";
+        String errorMessage = "Such Category not in database";
         Category category = repository.findById(id).
                 orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
         CategoryResponse categoryResponse = mapToCategoryResponse(category);
@@ -93,7 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category getCategoryByName(String name) {
         log.debug("getCategoryByName with parameter: {} called", name);
 
-        String errorMessage = "Such ExpenseCategory is not in the Database";
+        String errorMessage = "Such Category is not in the Database";
         Category category = repository.findByName(name)
                 .orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
 

@@ -7,11 +7,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Account SET name = :name, accountType = :account_type WHERE id = :id")
-    void updateCategoryById(@Param("id") long id,
-                            @Param("name") String name,
-                            @Param("account_type") AccountType accountType);
+    void updateAccountById(@Param("id") long id,
+                           @Param("name") String name,
+                           @Param("account_type") AccountType accountType);
 }

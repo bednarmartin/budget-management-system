@@ -1,9 +1,11 @@
 package com.bednarmartin.budgetmanagementsystem.service.impl;
 
 import com.bednarmartin.budgetmanagementsystem.db.model.Account;
+import com.bednarmartin.budgetmanagementsystem.db.model.AccountType;
 import com.bednarmartin.budgetmanagementsystem.db.repository.AccountRepository;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
 import com.bednarmartin.budgetmanagementsystem.service.api.AccountService;
+import com.bednarmartin.budgetmanagementsystem.service.api.AccountTypeService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateAccountRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountResponse;
@@ -20,13 +22,17 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository repository;
 
+    private final AccountTypeService accountTypeService;
+
     @Override
     public void addAccount(CreateAccountRequest request) {
         log.debug("addAccount with parameter: {} called", request);
 
+        AccountType accountType = accountTypeService.getAccountTypeByName(request.getAccountTypeName());
+
         Account account = Account.builder()
                 .name(request.getName())
-                .accountType(request.getAccountType())
+                .accountType(accountType)
                 .balance(request.getInitialBalance())
                 .build();
 
@@ -40,7 +46,9 @@ public class AccountServiceImpl implements AccountService {
     public void updateAccount(long id, UpdateAccountRequest request) {
         log.debug("updateAccount with parameters: {}, {} called", id, request);
 
-        repository.updateCategoryById(id, request.getName(), request.getAccountType());
+        AccountType accountType = accountTypeService.getAccountTypeByName(request.getAccountTypeName());
+
+        repository.updateAccountById(id, request.getName(), accountType);
 
         log.info("Account with id: {} updated", id);
         log.debug("Account: {} updated", request);

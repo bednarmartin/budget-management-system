@@ -75,6 +75,27 @@ public class AccountTypeServiceImpl implements AccountTypeService {
         return accountTypes.stream().map(this::mapToAccountTypeResponse).toList();
     }
 
+    @Override
+    public AccountType getAccountTypeByName(String name) {
+        log.debug("getAccountTypeByName with parameter: {} called", name);
+
+        String errorMessage = "Such AccountType is not in the Database";
+        AccountType accountType = repository.findByName(name)
+                .orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
+
+        log.debug("AccountType: {} returned", accountType);
+        log.info("AccountType with id: {} returned", accountType.getId());
+
+        return accountType;
+    }
+
+    @Override
+    public void deleteAccountTypeByName(String name) {
+        log.debug("deleteAccountTypeByName with parameter: {} called", name);
+        repository.deleteByName(name);
+        log.info("AccountType with name: {} deleted", name);
+    }
+
     private AccountTypeResponse mapToAccountTypeResponse(AccountType accountType) {
         return AccountTypeResponse.builder()
                 .id(accountType.getId())

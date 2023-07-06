@@ -103,7 +103,7 @@ public class CategoryServiceTests {
     }
 
     @Test
-    public void testDeleteExpenseCategoryById() {
+    public void testDeleteCategoryById() {
         CategoryRequest createRequest = CategoryRequest.builder()
                 .name("Utilities")
                 .transactionType(TransactionType.EXPENSE)
@@ -120,7 +120,7 @@ public class CategoryServiceTests {
     }
 
     @Test
-    public void testDeleteExpenseCategoryByName() {
+    public void testDeleteCategoryByName() {
         String name = "Utilities";
         CategoryRequest createRequest = CategoryRequest.builder()
                 .name(name)
@@ -136,7 +136,7 @@ public class CategoryServiceTests {
     }
 
     @Test
-    public void testGetExpenseCategoryByName() {
+    public void testGetCategoryByName() {
         String name = "Utilities";
         CategoryRequest createRequest = CategoryRequest.builder()
                 .name(name)

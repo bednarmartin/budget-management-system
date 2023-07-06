@@ -1,8 +1,5 @@
 package com.bednarmartin.budgetmanagementsystem.service.api.request;
 
-import com.bednarmartin.budgetmanagementsystem.db.model.AccountType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +17,5 @@ public class CreateAccountRequest {
 
     private BigDecimal initialBalance;
 
-    @ManyToOne
-    @JoinColumn(name = "account_type_id", referencedColumnName = "id")
-    private AccountType accountType;
+    private String accountTypeName;
 }

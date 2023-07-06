@@ -1,5 +1,6 @@
 package com.bednarmartin.budgetmanagementsystem.service.api;
 
+import com.bednarmartin.budgetmanagementsystem.db.model.AccountType;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountTypeResponse;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,5 +19,10 @@ public interface AccountTypeService {
     AccountTypeResponse getAccountTypeById(long id);
 
     List<AccountTypeResponse> getAllAccountTypes();
+
+    AccountType getAccountTypeByName(String name);
+
+    @Transactional
+    void deleteAccountTypeByName(String name);
 
 }

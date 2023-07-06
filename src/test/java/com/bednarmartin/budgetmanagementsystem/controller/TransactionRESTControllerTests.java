@@ -47,7 +47,7 @@ public class TransactionRESTControllerTests {
                 .transactionType(TransactionType.EXPENSE)
                 .build();
 
-        // Create a new Expense Category
+        // Create a new Category
         mockMvc.perform(post("/api/category")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -68,13 +68,13 @@ public class TransactionRESTControllerTests {
                 .type(TransactionType.EXPENSE)
                 .build();
 
-        // Create a new Expense
+        // Create a new Transaction
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
 
-        // Get Expense
+        // Get the Transaction
         String responseJson = mockMvc.perform(get(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -106,23 +106,23 @@ public class TransactionRESTControllerTests {
                     .type(TransactionType.EXPENSE)
                     .build();
 
-            // Create a new Expense Category
+            // Create a new Transaction
             mockMvc.perform(post(URL)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isCreated());
         }
 
-        // Get all Expense Categories
+        // Get all Transactions
 
-        String expenseJson = mockMvc.perform(get(URL)
+        String transactionJson = mockMvc.perform(get(URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        List<TransactionResponse> responseList = objectMapper.readValue(expenseJson, new TypeReference<>() {
+        List<TransactionResponse> responseList = objectMapper.readValue(transactionJson, new TypeReference<>() {
         });
 
 
@@ -149,7 +149,7 @@ public class TransactionRESTControllerTests {
                 .type(TransactionType.EXPENSE)
                 .build();
 
-        // Create a new Expense
+        // Create a new Transaction
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -164,13 +164,13 @@ public class TransactionRESTControllerTests {
                 .type(TransactionType.EXPENSE)
                 .build();
 
-        // Update the Expense
+        // Update the Transaction
         mockMvc.perform(put(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk());
 
-        // Get updated Expense
+        // Get updated Transaction
         String responseJson = mockMvc.perform(get(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -200,27 +200,27 @@ public class TransactionRESTControllerTests {
                 .type(TransactionType.EXPENSE)
                 .build();
 
-        // Create a new Expense
+        // Create a new Transaction
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
 
 
-        // Delete the Expense
+        // Delete the Transaction
         mockMvc.perform(delete(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        // Get all Expenses
-        String expenseJson = mockMvc.perform(get(URL)
+        // Get all Transactions
+        String transactionJson = mockMvc.perform(get(URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        List<TransactionResponse> responseList = objectMapper.readValue(expenseJson, new TypeReference<>() {
+        List<TransactionResponse> responseList = objectMapper.readValue(transactionJson, new TypeReference<>() {
         });
 
         Assertions.assertEquals(0, responseList.size());

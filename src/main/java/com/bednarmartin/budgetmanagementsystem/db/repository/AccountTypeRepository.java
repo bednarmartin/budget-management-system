@@ -6,8 +6,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 
 public interface AccountTypeRepository extends JpaRepository<AccountType, Long> {
+
+    Optional<AccountType> findByName(String name);
+
+    void deleteByName(String name);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE AccountType SET name = :name WHERE id = :id")

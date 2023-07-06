@@ -1,8 +1,7 @@
 package com.bednarmartin.budgetmanagementsystem.controller;
 
-import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.response.CategoryResponse;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountTypeResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -19,20 +18,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-class CategoryRESTControllerTests {
+public class AccountTypeRESTControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     private static ObjectMapper objectMapper;
 
-    private final String URL = "/api/category";
-
+    private final String URL = "/api/account/type";
 
     @BeforeAll
     public static void init() {
@@ -42,21 +41,20 @@ class CategoryRESTControllerTests {
     }
 
     @Test
-    void testAddCategory() throws Exception {
-        String name = "Groceries";
+    void testAddAccountType() throws Exception {
+        String name = "Cash";
 
-        CategoryRequest request = CategoryRequest.builder()
+        AccountTypeRequest request = AccountTypeRequest.builder()
                 .name(name)
-                .transactionType(TransactionType.EXPENSE)
                 .build();
 
-        // Create a new Category
+        // Create a new Account Type
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
 
-        // Get Category
+        // Get Account Type
         String responseJson = mockMvc.perform(get(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -64,82 +62,74 @@ class CategoryRESTControllerTests {
                 .getResponse()
                 .getContentAsString();
 
-        CategoryResponse response = objectMapper.readValue(responseJson, CategoryResponse.class);
+        AccountTypeResponse response = objectMapper.readValue(responseJson, AccountTypeResponse.class);
 
         Assertions.assertEquals(1, response.getId());
         Assertions.assertEquals(name, response.getName());
-        Assertions.assertEquals(TransactionType.EXPENSE, response.getTransactionType());
-
     }
 
     @Test
     void testAddMoreCategories() throws Exception {
-        String[] names = {"Groceries", "Utilities", "Health"};
+        String[] names = {"Cash", "Bank Account", "Investments"};
 
         for (String name : names) {
-            CategoryRequest request = CategoryRequest.builder()
+            AccountTypeRequest request = AccountTypeRequest.builder()
                     .name(name)
-                    .transactionType(TransactionType.EXPENSE)
                     .build();
 
-            // Create a new Category
+            // Create a new Account Type
             mockMvc.perform(post(URL)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isCreated());
         }
 
-        // Get all Categories
-
-        String categoriesJson = mockMvc.perform(get(URL)
+        // Get all Account Types
+        String accountTypesJson = mockMvc.perform(get(URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        List<CategoryResponse> responseList = objectMapper.readValue(
-                categoriesJson, new TypeReference<>() {
-                });
+        List<AccountTypeResponse> responseList = objectMapper.readValue(accountTypesJson, new TypeReference<>() {
+        });
 
 
         Assertions.assertEquals(3, responseList.size());
         for (int i = 0; i < responseList.size(); i++) {
             Assertions.assertEquals(names[i], responseList.get(i).getName());
-            Assertions.assertEquals(TransactionType.EXPENSE, responseList.get(i).getTransactionType());
         }
 
     }
 
     @Test
-    void testUpdateCategory() throws Exception {
-        String name = "Groceries";
+    void testUpdateAccountType() throws Exception {
+        String name = "Cash";
 
-        CategoryRequest request = CategoryRequest.builder()
+        AccountTypeRequest request = AccountTypeRequest.builder()
                 .name(name)
-                .transactionType(TransactionType.EXPENSE)
                 .build();
 
-        // Create a new Category
+        // Create a new Account Type
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
 
 
-        String newName = "Utilities";
-        CategoryRequest updateRequest = CategoryRequest.builder()
+        String newName = "Bank Account";
+        AccountTypeRequest updateRequest = AccountTypeRequest.builder()
                 .name(newName)
-                .transactionType(TransactionType.EXPENSE)
                 .build();
 
-        // Update the Category
+        // Update the Account Type
         mockMvc.perform(put(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk());
 
-        // Get updated Category
+        // Get updated Account Type
         String responseJson = mockMvc.perform(get(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -147,35 +137,33 @@ class CategoryRESTControllerTests {
                 .getResponse()
                 .getContentAsString();
 
-        CategoryResponse response = objectMapper.readValue(responseJson, CategoryResponse.class);
+        AccountTypeResponse response = objectMapper.readValue(responseJson, AccountTypeResponse.class);
 
         Assertions.assertEquals(1, response.getId());
         Assertions.assertEquals(newName, response.getName());
-        Assertions.assertEquals(TransactionType.EXPENSE, response.getTransactionType());
     }
 
     @Test
-    void testDeleteCategory() throws Exception {
-        String name = "Groceries";
+    void testDeleteAccountType() throws Exception {
+        String name = "Cash";
 
-        CategoryRequest request = CategoryRequest.builder()
+        AccountTypeRequest request = AccountTypeRequest.builder()
                 .name(name)
-                .transactionType(TransactionType.EXPENSE)
                 .build();
 
-        // Create a new Category
+        // Create a new Account Type
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
 
 
-        // Delete the Category
+        // Delete the Account Type
         mockMvc.perform(delete(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        // Get all  Categories
+        // Get all Account Types
         String categoriesJson = mockMvc.perform(get(URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -183,7 +171,7 @@ class CategoryRESTControllerTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<CategoryResponse> responseList = objectMapper.readValue(
+        List<AccountTypeResponse> responseList = objectMapper.readValue(
                 categoriesJson, new TypeReference<>() {
                 });
 

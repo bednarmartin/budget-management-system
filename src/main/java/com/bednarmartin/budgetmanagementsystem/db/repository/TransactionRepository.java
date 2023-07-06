@@ -26,4 +26,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                                @Param("type") TransactionType type,
                                @Param("account") Account account,
                                @Param("datetime") LocalDateTime dateTime);
+
 }
+

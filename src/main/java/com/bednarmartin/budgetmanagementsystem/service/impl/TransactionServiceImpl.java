@@ -88,6 +88,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<TransactionResponse> getAllTransactions() {
         log.debug("getAllTransactions called");
+
         List<Transaction> transactions = repository.findAll();
 
         log.info("all TransactionResponses returned");

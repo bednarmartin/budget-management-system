@@ -5,12 +5,14 @@ import com.bednarmartin.budgetmanagementsystem.db.repository.CategoryRepository;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
 import com.bednarmartin.budgetmanagementsystem.service.api.CategoryService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.CategoryResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -101,6 +103,38 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Category with id: {} returned", category.getId());
 
         return category;
+    }
+
+    @Override
+    public List<AmountSumByCategoryResponse> getAmountSumByCategory() {
+        log.debug("getAmountSumByCategory called");
+
+        List<AmountSumByCategoryResponse> responses = repository.getAllAmountSumsByCategory();
+
+        for (AmountSumByCategoryResponse response : responses) {
+            if (response.getSum() == null) {
+                response.setSum(BigDecimal.ZERO);
+            }
+        }
+
+        log.info("all AmountSumByCategoryResponse returned");
+        return responses;
+    }
+
+    @Override
+    public AmountSumByCategoryResponse getAmountSumByCategoryByCategoryName(String categoryName) {
+        log.debug("getAmountSumByCategory called");
+
+        String errorMessage = "Such Category not in database";
+        AmountSumByCategoryResponse response = repository.getAllAmountSumsByCategoryByCategoryName(categoryName)
+                .orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
+
+        if (response.getSum() == null) {
+            response.setSum(BigDecimal.ZERO);
+        }
+
+        log.info("AmountSumByCategoryResponse returned");
+        return response;
     }
 
     private CategoryResponse mapToCategoryResponse(Category category) {

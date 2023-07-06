@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Utilities",
+    "transactionType": "EXPENSE"
+  },
+  {
+    "name": "Healthcare",
+    "transactionType": "EXPENSE"
+  },
+  {
+    "name": "Education",
+    "transactionType": "EXPENSE"
+  },
+  {
+    "name": "Groceries",
+    "transactionType": "EXPENSE"
+  },
+  {
+    "name": "Alcohol",
+    "transactionType": "EXPENSE"
+  },
+  {
+    "name": "Electronics",
+    "transactionType": "EXPENSE"
+  },
+  {
+    "name": "Other",
+    "transactionType": "EXPENSE"
+  },
+  {
+    "name": "Salary",
+    "transactionType": "INCOME"
+  },
+  {
+    "name": "Interest",
+    "transactionType": "INCOME"
+  }
+]

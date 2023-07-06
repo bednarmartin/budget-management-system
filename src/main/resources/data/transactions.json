@@ -1,0 +1,65 @@
+[
+  {
+    "amount": 10.59,
+    "description": "Eating out",
+    "categoryName": "Other",
+    "type": "EXPENSE",
+    "accountName": "Purse"
+  },
+  {
+    "amount": 86,
+    "description": "Electricity Bill",
+    "categoryName": "Utilities",
+    "type": "EXPENSE",
+    "accountName": "JPMorgan Account"
+  },
+  {
+    "amount": 54.86,
+    "description": "Gas Bill",
+    "categoryName": "Utilities",
+    "type": "EXPENSE",
+    "accountName": "JPMorgan Account"
+  },
+  {
+    "amount": 156.23,
+    "description": "Lidl",
+    "categoryName": "Groceries",
+    "type": "EXPENSE",
+    "accountName": "JPMorgan Account"
+  },
+  {
+    "amount": 200,
+    "description": "For boyfriend's Birthday",
+    "categoryName": "Other",
+    "type": "EXPENSE",
+    "accountName": "Purse"
+  },
+  {
+    "amount": 36,
+    "description": "Supplementary Health Insurance",
+    "categoryName": "Healthcare",
+    "type": "EXPENSE",
+    "accountName": "First Bank Account"
+  },
+  {
+    "amount": 119,
+    "description": "Root canal",
+    "categoryName": "Healthcare",
+    "type": "EXPENSE",
+    "accountName": "First Bank Account"
+  },
+  {
+    "amount": 2500,
+    "description": "Salary from job",
+    "categoryName": "Salary",
+    "type": "INCOME",
+    "accountName": "First Bank Account"
+  },
+  {
+    "amount": 15,
+    "description": "Investments interest",
+    "categoryName": "Interest",
+    "type": "INCOME",
+    "accountName": "Retirement Savings"
+  }
+]

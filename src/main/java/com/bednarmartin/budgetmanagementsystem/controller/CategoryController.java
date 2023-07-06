@@ -2,6 +2,7 @@ package com.bednarmartin.budgetmanagementsystem.controller;
 
 import com.bednarmartin.budgetmanagementsystem.service.api.CategoryService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.CategoryResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,6 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.OK)
     public CategoryResponse getCategoryById(@PathVariable long id) {
         return categoryService.getCategoryById(id);
-
     }
 
     @GetMapping
@@ -46,6 +46,18 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.OK)
     public void updateCategory(@PathVariable long id, @RequestBody CategoryRequest request) {
         categoryService.updateCategory(id, request);
+    }
+
+    @GetMapping("/balances")
+    @ResponseStatus(HttpStatus.OK)
+    public List<AmountSumByCategoryResponse> updateCategory() {
+        return categoryService.getAmountSumByCategory();
+    }
+
+    @GetMapping("/balances/{category_name}")
+    @ResponseStatus(HttpStatus.OK)
+    public AmountSumByCategoryResponse updateCategory(@PathVariable("category_name") String categoryName) {
+        return categoryService.getAmountSumByCategoryByCategoryName(categoryName);
     }
 }
 

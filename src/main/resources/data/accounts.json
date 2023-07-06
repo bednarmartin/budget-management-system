@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Purse",
+    "initialBalance": 235.89,
+    "accountTypeName": "Cash"
+  },
+  {
+    "name": "First Bank Account",
+    "initialBalance": 4732.54,
+    "accountTypeName": "Bank Account"
+  },
+  {
+    "name": "JPMorgan Account",
+    "initialBalance": 1000,
+    "accountTypeName": "Bank Account"
+  },
+  {
+    "name": "Retirement Savings",
+    "initialBalance": 15638.59,
+    "accountTypeName": "Investments"
+  }
+]

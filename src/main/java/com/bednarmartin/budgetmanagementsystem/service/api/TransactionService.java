@@ -9,6 +9,7 @@ import java.util.List;
 public interface TransactionService {
 
     void addTransaction(TransactionRequest request);
+
     @Transactional
     void updateTransaction(long id, TransactionRequest request);
 
@@ -18,3 +19,4 @@ public interface TransactionService {
 
     TransactionResponse getTransactionById(long id);
 }
+

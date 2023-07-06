@@ -1,8 +1,12 @@
 package com.bednarmartin.budgetmanagementsystem.repository;
 
+import com.bednarmartin.budgetmanagementsystem.db.model.Account;
+import com.bednarmartin.budgetmanagementsystem.db.model.AccountType;
 import com.bednarmartin.budgetmanagementsystem.db.model.Transaction;
 import com.bednarmartin.budgetmanagementsystem.db.model.Category;
 import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
+import com.bednarmartin.budgetmanagementsystem.db.repository.AccountRepository;
+import com.bednarmartin.budgetmanagementsystem.db.repository.AccountTypeRepository;
 import com.bednarmartin.budgetmanagementsystem.db.repository.CategoryRepository;
 import com.bednarmartin.budgetmanagementsystem.db.repository.TransactionRepository;
 import org.junit.jupiter.api.Assertions;
@@ -26,10 +30,26 @@ public class TransactionRepositoryTests {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private AccountTypeRepository accountTypeRepository;
+
     @Test
     @Transactional
     public void testUpdateTransactionById() throws InterruptedException {
         LocalDateTime dateTime = LocalDateTime.now();
+
+        AccountType accountType = AccountType.builder()
+                .name("Cash")
+                .build();
+
+        Account account = Account.builder()
+                .accountType(accountType)
+                .balance(BigDecimal.valueOf(9.99))
+                .name("Cash Account")
+                .build();
 
         Category category = Category.builder()
                 .name("Health")
@@ -45,8 +65,11 @@ public class TransactionRepositoryTests {
                 .type(TransactionType.EXPENSE)
                 .dateUpdated(dateTime)
                 .dateCreated(dateTime)
+                .account(account)
                 .build();
 
+        accountTypeRepository.save(accountType);
+        accountRepository.save(account);
         categoryRepository.save(category);
         expenseRepository.save(transaction);
         Thread.sleep(1000);
@@ -59,6 +82,7 @@ public class TransactionRepositoryTests {
                 transaction.getDescription(),
                 category,
                 transaction.getType(),
+                account,
                 newDateTime
         );
 
@@ -77,6 +101,8 @@ public class TransactionRepositoryTests {
         Assertions.assertEquals(transaction.getType(), updatedTransaction.getType());
         Assertions.assertEquals(category.getName(), updatedTransaction.getCategory().getName());
         Assertions.assertEquals(transaction.getDescription(), updatedTransaction.getDescription());
+        Assertions.assertEquals(account.getName(), updatedTransaction.getAccount().getName());
+        Assertions.assertEquals(account.getBalance(), updatedTransaction.getAccount().getBalance());
     }
 
 }

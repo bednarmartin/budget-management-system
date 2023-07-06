@@ -1,7 +1,9 @@
 package com.bednarmartin.budgetmanagementsystem.controller;
 
 import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.TransactionResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -42,7 +44,7 @@ public class TransactionRESTControllerTests {
 
         String categoryName = "Groceries";
 
-        CategoryRequest request = CategoryRequest.builder()
+        CategoryRequest categoryRequest = CategoryRequest.builder()
                 .name(categoryName)
                 .transactionType(TransactionType.EXPENSE)
                 .build();
@@ -50,7 +52,34 @@ public class TransactionRESTControllerTests {
         // Create a new Category
         mockMvc.perform(post("/api/category")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(categoryRequest)))
+                .andExpect(status().isCreated());
+
+        String accountTypeName = "Cash";
+
+        AccountTypeRequest accountTypeRequest = AccountTypeRequest.builder()
+                .name(accountTypeName)
+                .build();
+
+        // Create a new Account Type
+        mockMvc.perform(post("/api/account/type")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(accountTypeRequest)))
+                .andExpect(status().isCreated());
+
+        String accountName = "Cash account";
+        BigDecimal balance = BigDecimal.valueOf(10.59);
+
+        CreateAccountRequest accountRequest = CreateAccountRequest.builder()
+                .initialBalance(balance)
+                .accountTypeName(accountTypeName)
+                .name(accountName)
+                .build();
+
+        // Create a new Account
+        mockMvc.perform(post("/api/account")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(accountRequest)))
                 .andExpect(status().isCreated());
 
     }
@@ -66,6 +95,7 @@ public class TransactionRESTControllerTests {
                 .description(description)
                 .categoryName(categoryName)
                 .type(TransactionType.EXPENSE)
+                .accountName("Cash account")
                 .build();
 
         // Create a new Transaction
@@ -89,6 +119,7 @@ public class TransactionRESTControllerTests {
         Assertions.assertEquals(description, response.getDescription());
         Assertions.assertEquals(TransactionType.EXPENSE, response.getType());
         Assertions.assertEquals(price, response.getAmount());
+        Assertions.assertEquals("Cash account", response.getAccount().getName());
 
     }
 
@@ -103,6 +134,7 @@ public class TransactionRESTControllerTests {
                     .categoryName(categoryName)
                     .description(descriptions[i])
                     .amount(prices[i])
+                    .accountName("Cash account")
                     .type(TransactionType.EXPENSE)
                     .build();
 
@@ -114,7 +146,6 @@ public class TransactionRESTControllerTests {
         }
 
         // Get all Transactions
-
         String transactionJson = mockMvc.perform(get(URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -132,6 +163,7 @@ public class TransactionRESTControllerTests {
             Assertions.assertEquals(prices[i], responseList.get(i).getAmount());
             Assertions.assertEquals(categoryName, responseList.get(i).getCategory().getName());
             Assertions.assertEquals(TransactionType.EXPENSE, responseList.get(i).getType());
+            Assertions.assertEquals("Cash account", responseList.get(i).getAccount().getName());
         }
 
     }
@@ -147,6 +179,7 @@ public class TransactionRESTControllerTests {
                 .description(description)
                 .categoryName(categoryName)
                 .type(TransactionType.EXPENSE)
+                .accountName("Cash account")
                 .build();
 
         // Create a new Transaction
@@ -161,6 +194,7 @@ public class TransactionRESTControllerTests {
                 .amount(newPrice)
                 .description(description)
                 .categoryName(categoryName)
+                .accountName("Cash account")
                 .type(TransactionType.EXPENSE)
                 .build();
 
@@ -185,6 +219,7 @@ public class TransactionRESTControllerTests {
         Assertions.assertEquals(newPrice, response.getAmount());
         Assertions.assertEquals(TransactionType.EXPENSE, response.getType());
         Assertions.assertEquals(description, response.getDescription());
+        Assertions.assertEquals("Cash account", response.getAccount().getName());
     }
 
     @Test
@@ -198,6 +233,7 @@ public class TransactionRESTControllerTests {
                 .description(description)
                 .categoryName(categoryName)
                 .type(TransactionType.EXPENSE)
+                .accountName("Cash account")
                 .build();
 
         // Create a new Transaction

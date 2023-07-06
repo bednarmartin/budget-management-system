@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
@@ -15,4 +17,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     void updateAccountById(@Param("id") long id,
                            @Param("name") String name,
                            @Param("account_type") AccountType accountType);
+
+    Optional<Account> findByName(String name);
 }

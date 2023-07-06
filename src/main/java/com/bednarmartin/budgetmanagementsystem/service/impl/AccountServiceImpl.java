@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -83,6 +84,52 @@ public class AccountServiceImpl implements AccountService {
 
         log.info("all AccountResponse returned");
         return accounts.stream().map(this::mapToAccountResponse).toList();
+    }
+
+    @Override
+    public Account getAccountByName(String name) {
+        log.debug("getAccountByName with parameter: {} called", name);
+
+        String errorMessage = "Such Account not in database";
+        Account account = repository.findByName(name).
+                orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
+
+        log.debug("Account: {} returned", account);
+        log.info("Account with id: {} returned", account.getId());
+
+        return account;
+    }
+
+    @Override
+    public void subtractFromBalance(Account account, BigDecimal amount) {
+        log.debug("subtractFromBalance with parameters: {}, {} called", account, amount);
+
+        Account updatedAccount = Account.builder()
+                .id(account.getId())
+                .accountType(account.getAccountType())
+                .name(account.getName())
+                .balance(account.getBalance().subtract(amount))
+                .build();
+        repository.save(updatedAccount);
+
+        log.info("Account with id: {} updated", updatedAccount.getId());
+        log.debug("Updated Account: {}", account);
+    }
+
+    @Override
+    public void addToBalance(Account account, BigDecimal amount) {
+        log.debug("addToBalance with parameters: {}, {} called", account, amount);
+
+        Account updatedAccount = Account.builder()
+                .id(account.getId())
+                .accountType(account.getAccountType())
+                .name(account.getName())
+                .balance(account.getBalance().add(amount))
+                .build();
+        repository.save(updatedAccount);
+
+        log.info("Account with id: {} updated", updatedAccount.getId());
+        log.debug("Updated Account: {}", account);
     }
 
     private AccountResponse mapToAccountResponse(Account account) {

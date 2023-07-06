@@ -1,10 +1,12 @@
 package com.bednarmartin.budgetmanagementsystem.service.impl;
 
+import com.bednarmartin.budgetmanagementsystem.db.model.Account;
 import com.bednarmartin.budgetmanagementsystem.db.model.Transaction;
 import com.bednarmartin.budgetmanagementsystem.db.model.Category;
 import com.bednarmartin.budgetmanagementsystem.db.repository.TransactionRepository;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
 import com.bednarmartin.budgetmanagementsystem.exception.TransactionTypeMismatchException;
+import com.bednarmartin.budgetmanagementsystem.service.api.AccountService;
 import com.bednarmartin.budgetmanagementsystem.service.api.CategoryService;
 import com.bednarmartin.budgetmanagementsystem.service.api.TransactionService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
@@ -25,13 +27,17 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final CategoryService categoryService;
 
+    private final AccountService accountService;
+
     @Override
     public void addTransaction(TransactionRequest request) {
         log.debug("addTransaction with parameter: {} called", request);
 
         Category category = categoryService.getCategoryByName(request.getCategoryName());
+        Account account = accountService.getAccountByName(request.getAccountName());
 
         checkTransactionTypes(request, category);
+        updateAccountBalance(request, account);
 
         LocalDateTime actualTime = LocalDateTime.now();
         Transaction transaction = Transaction.builder()
@@ -41,6 +47,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .dateCreated(actualTime)
                 .dateUpdated(actualTime)
                 .type(request.getType())
+                .account(account)
                 .build();
         repository.save(transaction);
 
@@ -49,13 +56,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
-
     @Override
     public void updateTransaction(long id, TransactionRequest request) {
         log.debug("updateTransaction with parameters: {}, {} called", id, request);
 
-        Category category = categoryService.getCategoryByName(
-                request.getCategoryName());
+        Category category = categoryService.getCategoryByName(request.getCategoryName());
+        Account account = accountService.getAccountByName(request.getAccountName());
 
         checkTransactionTypes(request, category);
 
@@ -65,6 +71,7 @@ public class TransactionServiceImpl implements TransactionService {
                 request.getDescription(),
                 category,
                 request.getType(),
+                account,
                 actualTime);
 
         log.info("Transaction with id: {} updated", id);
@@ -109,6 +116,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .category(transaction.getCategory())
                 .type(transaction.getType())
                 .dateCreated(transaction.getDateCreated())
+                .account(transaction.getAccount())
                 .build();
     }
 
@@ -118,4 +126,14 @@ public class TransactionServiceImpl implements TransactionService {
             throw new TransactionTypeMismatchException("Transaction types of request and category must be the same!");
         }
     }
+
+    private void updateAccountBalance(TransactionRequest request, Account account) {
+        switch (request.getType()) {
+            case INCOME -> accountService.addToBalance(account, request.getAmount());
+            case EXPENSE -> accountService.subtractFromBalance(account, request.getAmount());
+            case TRANSFER -> {
+            }
+        }
+    }
+
 }

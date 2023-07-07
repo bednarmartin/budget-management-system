@@ -2,11 +2,11 @@ package com.bednarmartin.budgetmanagementsystem.service.impl;
 
 import com.bednarmartin.budgetmanagementsystem.db.model.AccountType;
 import com.bednarmartin.budgetmanagementsystem.db.repository.AccountTypeRepository;
+import com.bednarmartin.budgetmanagementsystem.exception.DatabaseDuplicateException;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
 import com.bednarmartin.budgetmanagementsystem.service.api.AccountTypeService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountTypeResponse;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,9 +24,12 @@ public class AccountTypeServiceImpl implements AccountTypeService {
     public void addAccountType(AccountTypeRequest request) {
         log.debug("addAccountType with parameter: {} called", request);
 
+        checkDuplicate(request.getName());
+
         AccountType accountType = AccountType.builder()
                 .name(request.getName())
                 .build();
+
         repository.save(accountType);
 
         log.info("AccountType with id: {} saved", accountType.getId());
@@ -36,6 +39,9 @@ public class AccountTypeServiceImpl implements AccountTypeService {
     @Override
     public void updateAccountType(long id, AccountTypeRequest request) {
         log.debug("updateAccountType with parameters: {}, {} called", id, request);
+
+        String errorMessage = "Such Account Type not in database";
+        repository.findById(id).orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
 
         repository.updateAccountTypeById(id, request.getName());
 
@@ -55,7 +61,7 @@ public class AccountTypeServiceImpl implements AccountTypeService {
     public AccountTypeResponse getAccountTypeById(long id) {
         log.debug("getAccountTypeById with parameter: {} called", id);
 
-        String errorMessage = "Such AccountType not in database";
+        String errorMessage = "Such Account Type not in database";
         AccountType accountType = repository.findById(id).
                 orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
         AccountTypeResponse accountTypeResponse = mapToAccountTypeResponse(accountType);
@@ -79,7 +85,7 @@ public class AccountTypeServiceImpl implements AccountTypeService {
     public AccountType getAccountTypeByName(String name) {
         log.debug("getAccountTypeByName with parameter: {} called", name);
 
-        String errorMessage = "Such AccountType is not in the Database";
+        String errorMessage = "Such Account Type is not in the Database";
         AccountType accountType = repository.findByName(name)
                 .orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
 
@@ -92,6 +98,10 @@ public class AccountTypeServiceImpl implements AccountTypeService {
     @Override
     public void deleteAccountTypeByName(String name) {
         log.debug("deleteAccountTypeByName with parameter: {} called", name);
+
+        String errorMessage = "Such Account Type not in database";
+        repository.findByName(name).orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
+
         repository.deleteByName(name);
         log.info("AccountType with name: {} deleted", name);
     }
@@ -101,5 +111,11 @@ public class AccountTypeServiceImpl implements AccountTypeService {
                 .id(accountType.getId())
                 .name(accountType.getName())
                 .build();
+    }
+
+    private void checkDuplicate(String name) {
+        if (repository.findByName(name).isPresent()){
+            throw new DatabaseDuplicateException("Account Type with the same name already in the database");
+        }
     }
 }

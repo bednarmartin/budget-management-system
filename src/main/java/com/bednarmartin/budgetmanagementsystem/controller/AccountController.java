@@ -1,13 +1,17 @@
 package com.bednarmartin.budgetmanagementsystem.controller;
 
+import com.bednarmartin.budgetmanagementsystem.exception.DatabaseDuplicateException;
+import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
 import com.bednarmartin.budgetmanagementsystem.service.api.AccountService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateAccountRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,33 +22,91 @@ public class AccountController {
     private final AccountService accountService;
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public AccountResponse getCategoryById(@PathVariable long id) {
-        return accountService.getAccountById(id);
+    public ResponseEntity<AccountResponse> getAccountById(@PathVariable long id) {
+        AccountResponse accountResponse = null;
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        try {
+            accountResponse = accountService.getAccountById(id);
+        } catch (SuchElementNotInDatabaseException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(accountResponse, httpStatus);
 
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<AccountResponse> getAllCategories() {
-        return accountService.getAllAccounts();
+    public ResponseEntity<List<AccountResponse>> getAllAccounts() {
+        List<AccountResponse> accountResponses = new ArrayList<>();
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        try {
+            accountResponses = accountService.getAllAccounts();
+        } catch (Exception e) {
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(accountResponses, httpStatus);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addCategory(@RequestBody CreateAccountRequest request) {
-        accountService.addAccount(request);
+    public ResponseEntity<String> addAccount(@RequestBody CreateAccountRequest request) {
+        String message = "Account created successfully";
+        HttpStatus httpStatus = HttpStatus.CREATED;
+
+        try {
+            accountService.addAccount(request);
+        } catch (DatabaseDuplicateException e) {
+            message = e.getMessage();
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } catch (Exception e) {
+            message = "Something went wrong";
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(message, httpStatus);
+
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteCategory(@PathVariable long id) {
-        accountService.deleteAccountById(id);
+    public ResponseEntity<String> deleteAccount(@PathVariable long id) {
+        String message = "Account deleted successfully";
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        try {
+            accountService.deleteAccountById(id);
+        } catch (SuchElementNotInDatabaseException e) {
+            message = e.getMessage();
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } catch (Exception e) {
+            message = "Something went wrong";
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(message, httpStatus);
+
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateCategory(@PathVariable long id, @RequestBody UpdateAccountRequest request) {
-        accountService.updateAccount(id, request);
+    public ResponseEntity<String> updateAccount(@PathVariable long id, @RequestBody UpdateAccountRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        String message = "Account updated successfully";
+
+        try {
+            accountService.updateAccount(id, request);
+        } catch (SuchElementNotInDatabaseException e) {
+            message = e.getMessage();
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } catch (Exception e) {
+            message = "Something went wrong";
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(message, httpStatus);
+
+
     }
 }

@@ -1,12 +1,16 @@
 package com.bednarmartin.budgetmanagementsystem.controller;
 
+import com.bednarmartin.budgetmanagementsystem.exception.DatabaseDuplicateException;
+import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
 import com.bednarmartin.budgetmanagementsystem.service.api.TransactionService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.TransactionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,34 +21,87 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public TransactionResponse getTransactionById(@PathVariable long id) {
-        return transactionService.getTransactionById(id);
+    public ResponseEntity<TransactionResponse> getTransactionById(@PathVariable long id) {
+        TransactionResponse response = null;
+        HttpStatus httpStatus = HttpStatus.OK;
 
+        try {
+            response = transactionService.getTransactionById(id);
+        } catch (SuchElementNotInDatabaseException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(response, httpStatus);
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<TransactionResponse> getAllTransactions() {
-        return transactionService.getAllTransactions();
+    public ResponseEntity<List<TransactionResponse>> getAllTransactions() {
+        List<TransactionResponse> responses = new ArrayList<>();
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        try {
+            responses = transactionService.getAllTransactions();
+        } catch (Exception e) {
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(responses, httpStatus);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addTransaction(@RequestBody TransactionRequest request) {
-        transactionService.addTransaction(request);
+    public ResponseEntity<String> addTransaction(@RequestBody TransactionRequest request) {
+        HttpStatus httpStatus = HttpStatus.CREATED;
+        String message = "Transaction created successfully";
+
+        try {
+            transactionService.addTransaction(request);
+        } catch (DatabaseDuplicateException e) {
+            message = e.getMessage();
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } catch (Exception e) {
+            message = "Something went wrong";
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(message, httpStatus);
+
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteTransaction(@PathVariable long id) {
-        transactionService.deleteTransactionById(id);
+    public ResponseEntity<String> deleteTransaction(@PathVariable long id) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        String message = "Transaction deleted successfully";
+
+        try {
+            transactionService.deleteTransactionById(id);
+        } catch (SuchElementNotInDatabaseException e) {
+            message = e.getMessage();
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } catch (Exception e) {
+            message = "Something went wrong";
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(message, httpStatus);
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateTransaction(@PathVariable long id, @RequestBody TransactionRequest request) {
-        transactionService.updateTransaction(id, request);
+    public ResponseEntity<String> updateTransaction(@PathVariable long id, @RequestBody TransactionRequest request) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        String message = "Transaction updated successfully";
+        try {
+            transactionService.updateTransaction(id, request);
+        } catch (SuchElementNotInDatabaseException e) {
+            message = e.getMessage();
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } catch (Exception e) {
+            message = "Something went wrong";
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(message, httpStatus);
     }
 
 

@@ -5,6 +5,7 @@ import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabas
 import com.bednarmartin.budgetmanagementsystem.service.api.AccountTypeService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountTypeResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,7 @@ public class AccountTypeController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addAccountType(@RequestBody AccountTypeRequest request) {
+    public ResponseEntity<String> addAccountType(@Valid @RequestBody AccountTypeRequest request) {
         HttpStatus httpStatus = HttpStatus.CREATED;
         String message = "Account Type created successfully";
 
@@ -90,7 +91,7 @@ public class AccountTypeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateAccountType(@PathVariable long id, @RequestBody AccountTypeRequest request) {
+    public ResponseEntity<String> updateAccountType(@PathVariable long id, @Valid @RequestBody AccountTypeRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         String message = "Account Type updated successfully";
         try {

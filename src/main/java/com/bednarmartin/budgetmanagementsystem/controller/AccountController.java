@@ -6,6 +6,7 @@ import com.bednarmartin.budgetmanagementsystem.service.api.AccountService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateAccountRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addAccount(@RequestBody CreateAccountRequest request) {
+    public ResponseEntity<String> addAccount(@Valid @RequestBody CreateAccountRequest request) {
         String message = "Account created successfully";
         HttpStatus httpStatus = HttpStatus.CREATED;
 
@@ -91,7 +92,7 @@ public class AccountController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateAccount(@PathVariable long id, @RequestBody UpdateAccountRequest request) {
+    public ResponseEntity<String> updateAccount(@PathVariable long id, @Valid @RequestBody UpdateAccountRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         String message = "Account updated successfully";
 

@@ -6,6 +6,7 @@ import com.bednarmartin.budgetmanagementsystem.service.api.CategoryService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.CategoryResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addCategory(@RequestBody CategoryRequest request) {
+    public ResponseEntity<String> addCategory(@Valid @RequestBody CategoryRequest request) {
         HttpStatus httpStatus = HttpStatus.CREATED;
         String message = "Category created successfully";
 
@@ -88,7 +89,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateCategory(@PathVariable long id, @RequestBody CategoryRequest request) {
+    public ResponseEntity<String> updateCategory(@PathVariable long id, @Valid @RequestBody CategoryRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         String message = "Category updated successfully";
         try {

@@ -5,6 +5,7 @@ import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabas
 import com.bednarmartin.budgetmanagementsystem.service.api.TransactionService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.TransactionResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +52,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addTransaction(@RequestBody TransactionRequest request) {
+    public ResponseEntity<String> addTransaction(@Valid @RequestBody TransactionRequest request) {
         HttpStatus httpStatus = HttpStatus.CREATED;
         String message = "Transaction created successfully";
 
@@ -88,7 +89,7 @@ public class TransactionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateTransaction(@PathVariable long id, @RequestBody TransactionRequest request) {
+    public ResponseEntity<String> updateTransaction(@PathVariable long id, @Valid @RequestBody TransactionRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         String message = "Transaction updated successfully";
         try {

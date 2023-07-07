@@ -1,7 +1,11 @@
 package com.bednarmartin.budgetmanagementsystem.controller;
 
 import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.CategoryResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +21,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -192,5 +197,134 @@ class CategoryRESTControllerTests {
 
         Assertions.assertEquals(0, responseList.size());
     }
+
+    @Test
+    public void testGetBalances() throws Exception {
+        String accountName = "Cash";
+        String accountTypeName = "Cash";
+        String accountTypeURL = "/api/account/type";
+        String accountURL = "/api/account";
+        String categoryURL = "/api/category";
+        String transactionURL = "/api/transaction";
+        String balancesURL = "/api/category/balances";
+
+        AccountTypeRequest createAccountTypeRequest = AccountTypeRequest.builder()
+                .name(accountTypeName)
+                .build();
+
+        // Create a new Account Type
+        mockMvc.perform(post(accountTypeURL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createAccountTypeRequest)))
+                .andExpect(status().isCreated());
+
+
+        BigDecimal balance = BigDecimal.valueOf(10.59);
+
+        CreateAccountRequest createAccountRequest = CreateAccountRequest.builder()
+                .initialBalance(balance)
+                .accountTypeName(accountTypeName)
+                .name(accountName)
+                .build();
+
+        // Create a new Account
+        mockMvc.perform(post(accountURL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createAccountRequest)))
+                .andExpect(status().isCreated());
+
+        String[] categoryNames = {"Groceries", "Utilities", "Health"};
+
+        for (String name : categoryNames) {
+            CategoryRequest request = CategoryRequest.builder()
+                    .name(name)
+                    .transactionType(TransactionType.EXPENSE)
+                    .build();
+
+            // Create a new Category
+            mockMvc.perform(post(categoryURL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isCreated());
+        }
+
+        String[] descriptions = {"Food", "Soda", "Candy"};
+        BigDecimal[] prices = {BigDecimal.valueOf(53.69), BigDecimal.valueOf(68.96), BigDecimal.valueOf(12.12)};
+        String categoryName = "Groceries";
+
+        for (int i = 0; i < descriptions.length; i++) {
+            TransactionRequest request = TransactionRequest.builder()
+                    .categoryName(categoryName)
+                    .description(descriptions[i])
+                    .amount(prices[i])
+                    .accountName("Cash")
+                    .type(TransactionType.EXPENSE)
+                    .build();
+
+            // Create a new Transaction
+            mockMvc.perform(post(transactionURL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isCreated());
+        }
+
+        String balancesJson = mockMvc.perform(get(balancesURL)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        List<AmountSumByCategoryResponse> responseList = objectMapper.readValue(balancesJson, new TypeReference<>() {
+        });
+
+        Assertions.assertEquals(3, responseList.size());
+
+        String groceriesBalanceJson = mockMvc.perform(get(balancesURL + "/Groceries")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        AmountSumByCategoryResponse groceriesBalanceResponse = objectMapper.readValue(groceriesBalanceJson,
+                AmountSumByCategoryResponse.class);
+
+        Assertions.assertEquals(prices[0].add(prices[1]).add(prices[2]).stripTrailingZeros(),
+                groceriesBalanceResponse.getSum().stripTrailingZeros());
+        Assertions.assertEquals("Groceries", groceriesBalanceResponse.getCategory());
+
+        String utilitiesBalanceJson = mockMvc.perform(get(balancesURL + "/Utilities")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        AmountSumByCategoryResponse utilitiesBalanceResponse = objectMapper.readValue(utilitiesBalanceJson,
+                AmountSumByCategoryResponse.class);
+
+        Assertions.assertEquals(BigDecimal.ZERO.stripTrailingZeros(),
+                utilitiesBalanceResponse.getSum().stripTrailingZeros());
+        Assertions.assertEquals("Utilities", utilitiesBalanceResponse.getCategory());
+
+        String healthBalanceJson = mockMvc.perform(get(balancesURL + "/Health")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        AmountSumByCategoryResponse healthBalanceResponse = objectMapper.readValue(healthBalanceJson,
+                AmountSumByCategoryResponse.class);
+
+        Assertions.assertEquals(BigDecimal.ZERO.stripTrailingZeros(),
+                healthBalanceResponse.getSum().stripTrailingZeros());
+        Assertions.assertEquals("Health", healthBalanceResponse.getCategory());
+
+
+
+    }
+
 
 }

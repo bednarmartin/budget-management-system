@@ -4,7 +4,6 @@ import com.bednarmartin.budgetmanagementsystem.service.api.CategoryService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.CategoryResponse;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -50,13 +49,13 @@ public class CategoryController {
 
     @GetMapping("/balances")
     @ResponseStatus(HttpStatus.OK)
-    public List<AmountSumByCategoryResponse> updateCategory() {
+    public List<AmountSumByCategoryResponse> getAllBalances() {
         return categoryService.getAmountSumByCategory();
     }
 
     @GetMapping("/balances/{category_name}")
     @ResponseStatus(HttpStatus.OK)
-    public AmountSumByCategoryResponse updateCategory(@PathVariable("category_name") String categoryName) {
+    public AmountSumByCategoryResponse getBalancesByName(@PathVariable("category_name") String categoryName) {
         return categoryService.getAmountSumByCategoryByCategoryName(categoryName);
     }
 }

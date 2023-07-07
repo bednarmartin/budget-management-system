@@ -29,7 +29,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             new com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse(c.name, SUM(t.amount))
             FROM Category c
             LEFT OUTER JOIN Transaction t ON c.id = t.category.id
-            GROUP BY t.category
+            GROUP BY c.name
             """)
     List<AmountSumByCategoryResponse> getAllAmountSumsByCategory();
 
@@ -39,7 +39,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             FROM Category c
             LEFT OUTER JOIN Transaction t ON c.id = t.category.id
             WHERE c.name = :name
-            GROUP BY t.category
+            GROUP BY c.name
             """)
     Optional<AmountSumByCategoryResponse> getAllAmountSumsByCategoryByCategoryName(@Param("name") String name);
 

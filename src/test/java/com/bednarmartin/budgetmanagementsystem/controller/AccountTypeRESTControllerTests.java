@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -179,6 +178,40 @@ public class AccountTypeRESTControllerTests {
 
 
         Assertions.assertEquals(0, responseList.size());
+    }
+
+    @Test
+    void testValidation() throws Exception {
+        String badName1 = "";
+        String badName2 = "OK";
+
+        // Empty request
+        AccountTypeRequest request = AccountTypeRequest.builder().build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request with bad name
+        request = AccountTypeRequest.builder()
+                .name(badName1)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        request = AccountTypeRequest.builder()
+                .name(badName2)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
     }
 
 }

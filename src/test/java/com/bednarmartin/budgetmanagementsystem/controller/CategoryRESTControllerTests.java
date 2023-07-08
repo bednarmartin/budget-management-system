@@ -322,7 +322,62 @@ class CategoryRESTControllerTests {
                 healthBalanceResponse.getSum().stripTrailingZeros());
         Assertions.assertEquals("Health", healthBalanceResponse.getCategory());
 
+    }
 
+    @Test
+    void testValidation() throws Exception {
+        String badName1 = "";
+        String badName2 = "OK";
+
+        // Empty request
+        CategoryRequest request = CategoryRequest.builder().build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request without name
+        request = CategoryRequest.builder()
+                .transactionType(TransactionType.EXPENSE)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request without type
+        request = CategoryRequest.builder()
+                .name("Groceries")
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+
+        //Request with bad name
+        request = CategoryRequest.builder()
+                .name(badName1)
+                .transactionType(TransactionType.EXPENSE)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        request = CategoryRequest.builder()
+                .name(badName2)
+                .transactionType(TransactionType.EXPENSE)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
 
     }
 

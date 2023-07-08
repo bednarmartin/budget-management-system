@@ -1,6 +1,8 @@
 package com.bednarmartin.budgetmanagementsystem.controller;
 
-import com.bednarmartin.budgetmanagementsystem.service.api.request.*;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateAccountRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -149,7 +151,6 @@ public class AccountRESTControllerTests {
                 .andExpect(status().isCreated());
 
 
-
         String newName = "New Cash Account";
         UpdateAccountRequest updateRequest = UpdateAccountRequest.builder()
                 .accountTypeName(accountTypeName)
@@ -216,5 +217,177 @@ public class AccountRESTControllerTests {
 
 
         Assertions.assertEquals(0, responseList.size());
+    }
+
+    @Test
+    void testCreateValidation() throws Exception {
+        String badName1 = "";
+        String badName2 = "OK";
+        BigDecimal badBalance = BigDecimal.valueOf(-56.58);
+        String badAccountType = "";
+
+        // Empty request
+        CreateAccountRequest request = CreateAccountRequest.builder().build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request without name
+        request = CreateAccountRequest.builder()
+                .accountTypeName("Cash")
+                .initialBalance(BigDecimal.ZERO)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request without type
+        request = CreateAccountRequest.builder()
+                .name("Cash")
+                .initialBalance(BigDecimal.ZERO)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+
+        // Request with bad balance
+        request = CreateAccountRequest.builder()
+                .name("Cash")
+                .accountTypeName("Cash")
+                .initialBalance(badBalance)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request with bad name
+        request = CreateAccountRequest.builder()
+                .name(badName1)
+                .accountTypeName("Cash")
+                .initialBalance(BigDecimal.ZERO)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        request = CreateAccountRequest.builder()
+                .name(badName2)
+                .accountTypeName("Cash")
+                .initialBalance(BigDecimal.ZERO)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request with bad account type
+        request = CreateAccountRequest.builder()
+                .name("Cash")
+                .accountTypeName(badAccountType)
+                .initialBalance(BigDecimal.ZERO)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    void testUpdateValidation() throws Exception {
+        String badName1 = "";
+        String badName2 = "OK";
+        String badAccountType = "";
+
+        String accountName = "Cash";
+        String accountTypeName = "Cash";
+        BigDecimal balance = BigDecimal.valueOf(10.59);
+
+        CreateAccountRequest createAccountRequest = CreateAccountRequest.builder()
+                .initialBalance(balance)
+                .accountTypeName(accountTypeName)
+                .name(accountName)
+                .build();
+
+        // Create a new Account
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createAccountRequest)))
+                .andExpect(status().isCreated());
+
+        // Empty request
+        UpdateAccountRequest request = UpdateAccountRequest.builder().build();
+
+        mockMvc.perform(put(URL + "/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request without name
+        request = UpdateAccountRequest.builder()
+                .accountTypeName("Cash")
+                .build();
+
+        mockMvc.perform(put(URL + "/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request without type
+        request = UpdateAccountRequest.builder()
+                .name("Cash")
+                .build();
+
+        mockMvc.perform(put(URL + "/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+
+        //Request with bad name
+        request = UpdateAccountRequest.builder()
+                .name(badName1)
+                .accountTypeName("Cash")
+                .build();
+
+        mockMvc.perform(put(URL + "/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        request = UpdateAccountRequest.builder()
+                .name(badName2)
+                .accountTypeName("Cash")
+                .build();
+
+        mockMvc.perform(put(URL + "/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request with bad account type
+        request = UpdateAccountRequest.builder()
+                .name("Cash")
+                .accountTypeName(badAccountType)
+                .build();
+
+        mockMvc.perform(put(URL + "/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
     }
 }

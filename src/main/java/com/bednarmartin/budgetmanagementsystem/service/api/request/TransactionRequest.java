@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 public class TransactionRequest {
 
     @Positive(message = "The amount must be positive")
+    @NotNull(message = "The amount is required!")
     private BigDecimal amount;
 
     @NotBlank(message = "The description is required!")

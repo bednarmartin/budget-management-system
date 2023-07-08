@@ -264,4 +264,173 @@ public class TransactionRESTControllerTests {
         Assertions.assertEquals(0, responseList.size());
     }
 
+    @Test
+    void testValidation() throws Exception {
+        BigDecimal badAmount1 = BigDecimal.ZERO;
+        BigDecimal badAmount2 = BigDecimal.valueOf(-5);
+
+        String badDescription = "";
+
+        String badCategoryName = "";
+
+        String badAccountName = "";
+        String badAccountName2 = "OK";
+
+        // Empty request
+        TransactionRequest request = TransactionRequest.builder().build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request without amount
+        request = TransactionRequest.builder()
+                .description("description")
+                .categoryName("categoryName")
+                .type(TransactionType.EXPENSE)
+                .accountName("Cash account")
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request without type
+        request = TransactionRequest.builder()
+                .amount(BigDecimal.TEN)
+                .description("description")
+                .categoryName("categoryName")
+                .accountName("Cash account")
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request without accountName
+        request = TransactionRequest.builder()
+                .amount(BigDecimal.TEN)
+                .type(TransactionType.EXPENSE)
+                .description("description")
+                .categoryName("categoryName")
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request without description
+        request = TransactionRequest.builder()
+                .amount(BigDecimal.TEN)
+                .type(TransactionType.EXPENSE)
+                .categoryName("categoryName")
+                .accountName("Cash account")
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        //Request without categoryName
+        request = TransactionRequest.builder()
+                .amount(BigDecimal.TEN)
+                .type(TransactionType.EXPENSE)
+                .description("description")
+                .accountName("Cash account")
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        // Request with bad balance
+        request = TransactionRequest.builder()
+                .amount(badAmount1)
+                .type(TransactionType.EXPENSE)
+                .description("description")
+                .categoryName("categoryName")
+                .accountName("Cash account")
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        request = TransactionRequest.builder()
+                .amount(badAmount2)
+                .type(TransactionType.EXPENSE)
+                .description("description")
+                .categoryName("categoryName")
+                .accountName("Cash account")
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        // Request with bad description
+        request = TransactionRequest.builder()
+                .amount(BigDecimal.TEN)
+                .type(TransactionType.EXPENSE)
+                .description(badDescription)
+                .categoryName("categoryName")
+                .accountName("Cash account")
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        // Request with bad categoryName
+        request = TransactionRequest.builder()
+                .amount(BigDecimal.TEN)
+                .type(TransactionType.EXPENSE)
+                .description("description")
+                .categoryName(badCategoryName)
+                .accountName("Cash account")
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        // Request with bad accountName
+        request = TransactionRequest.builder()
+                .amount(BigDecimal.TEN)
+                .type(TransactionType.EXPENSE)
+                .description("description")
+                .categoryName("categoryName")
+                .accountName(badAccountName)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        request = TransactionRequest.builder()
+                .amount(BigDecimal.TEN)
+                .type(TransactionType.EXPENSE)
+                .description("description")
+                .categoryName("categoryName")
+                .accountName(badAccountName2)
+                .build();
+
+        mockMvc.perform(post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+
 }

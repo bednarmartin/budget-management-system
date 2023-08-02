@@ -27,12 +27,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class AccountTypeRESTControllerTests {
 
+    private static ObjectMapper objectMapper;
+    private final String URL = "/api/account/type";
     @Autowired
     private MockMvc mockMvc;
-
-    private static ObjectMapper objectMapper;
-
-    private final String URL = "/api/account/type";
 
     @BeforeAll
     public static void init() {

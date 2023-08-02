@@ -32,12 +32,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class TransactionRESTControllerTests {
 
+    private final String URL = "/api/transaction";
     @Autowired
     private MockMvc mockMvc;
-
     private ObjectMapper objectMapper;
-
-    private final String URL = "/api/transaction";
 
     @BeforeEach
     public void init() throws Exception {

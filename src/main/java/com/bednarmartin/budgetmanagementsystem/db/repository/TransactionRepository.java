@@ -1,8 +1,8 @@
 package com.bednarmartin.budgetmanagementsystem.db.repository;
 
 import com.bednarmartin.budgetmanagementsystem.db.model.Account;
-import com.bednarmartin.budgetmanagementsystem.db.model.Transaction;
 import com.bednarmartin.budgetmanagementsystem.db.model.Category;
+import com.bednarmartin.budgetmanagementsystem.db.model.Transaction;
 import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

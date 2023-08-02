@@ -7,7 +7,6 @@ import com.bednarmartin.budgetmanagementsystem.service.api.CategoryService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.CategoryResponse;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public void addCategory(CategoryRequest request) {
+    public CategoryResponse addCategory(CategoryRequest request) {
         log.debug("addCategory with parameter: {} called", request);
 
         LocalDateTime actualTime = LocalDateTime.now();
@@ -40,17 +39,25 @@ public class CategoryServiceImpl implements CategoryService {
 
         log.info("Category with id: {} saved", category.getId());
         log.debug("Category: {} saved", category);
+
+        return mapToCategoryResponse(category);
     }
 
     @Override
-    public void updateCategory(long id, CategoryRequest request) {
+    public CategoryResponse updateCategory(long id, CategoryRequest request) {
         log.debug("updateCategory with parameters: {}, {} called", id, request);
 
         LocalDateTime actualTime = LocalDateTime.now();
         repository.updateCategoryById(id, request.getName(), request.getTransactionType(), actualTime);
 
+        String errorMessage = "Such Category not in database";
+        Category category = repository.findById(id).
+                orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
+
         log.info("Category with id: {} updated", id);
         log.debug("Category: {} updated", request);
+
+        return mapToCategoryResponse(category);
     }
 
     @Override

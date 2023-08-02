@@ -30,16 +30,13 @@ import java.util.List;
 public class TransactionServiceTests {
 
     @Autowired
-    private TransactionService transactionService;
-
-    @Autowired
     CategoryService categoryService;
-
     @Autowired
     AccountTypeService accountTypeService;
-
     @Autowired
     AccountService accountService;
+    @Autowired
+    private TransactionService transactionService;
 
     @BeforeEach
     public void init() {

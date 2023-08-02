@@ -33,13 +33,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class CategoryRESTControllerTests {
 
+    private static ObjectMapper objectMapper;
+    private final String URL = "/api/category";
     @Autowired
     private MockMvc mockMvc;
-
-    private static ObjectMapper objectMapper;
-
-    private final String URL = "/api/category";
-
 
     @BeforeAll
     public static void init() {
@@ -292,7 +289,7 @@ class CategoryRESTControllerTests {
 
         Assertions.assertEquals(prices[0].add(prices[1]).add(prices[2]).stripTrailingZeros(),
                 groceriesBalanceResponse.getSum().stripTrailingZeros());
-        Assertions.assertEquals("Groceries", groceriesBalanceResponse.getCategory());
+        Assertions.assertEquals("Groceries", groceriesBalanceResponse.getCategory().getName());
 
         String utilitiesBalanceJson = mockMvc.perform(get(balancesURL + "/Utilities")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -306,7 +303,7 @@ class CategoryRESTControllerTests {
 
         Assertions.assertEquals(BigDecimal.ZERO.stripTrailingZeros(),
                 utilitiesBalanceResponse.getSum().stripTrailingZeros());
-        Assertions.assertEquals("Utilities", utilitiesBalanceResponse.getCategory());
+        Assertions.assertEquals("Utilities", utilitiesBalanceResponse.getCategory().getName());
 
         String healthBalanceJson = mockMvc.perform(get(balancesURL + "/Health")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -320,7 +317,7 @@ class CategoryRESTControllerTests {
 
         Assertions.assertEquals(BigDecimal.ZERO.stripTrailingZeros(),
                 healthBalanceResponse.getSum().stripTrailingZeros());
-        Assertions.assertEquals("Health", healthBalanceResponse.getCategory());
+        Assertions.assertEquals("Health", healthBalanceResponse.getCategory().getName());
 
     }
 

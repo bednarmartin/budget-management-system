@@ -10,11 +10,13 @@ import java.util.List;
 
 public interface CategoryService {
 
-    void addCategory(CategoryRequest request);
+    CategoryResponse addCategory(CategoryRequest request);
+
     @Transactional
-    void updateCategory(long id, CategoryRequest request);
+    CategoryResponse updateCategory(long id, CategoryRequest request);
 
     void deleteCategoryById(long id);
+
     @Transactional
     void deleteCategoryByName(String name);
 

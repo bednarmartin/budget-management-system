@@ -2,7 +2,10 @@ package com.bednarmartin.budgetmanagementsystem.db.model;
 
 import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;

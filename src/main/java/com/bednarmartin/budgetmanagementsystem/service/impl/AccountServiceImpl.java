@@ -26,7 +26,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountTypeService accountTypeService;
 
     @Override
-    public void addAccount(CreateAccountRequest request) {
+    public AccountResponse addAccount(CreateAccountRequest request) {
         log.debug("addAccount with parameter: {} called", request);
 
         AccountType accountType = accountTypeService.getAccountTypeByName(request.getAccountTypeName());
@@ -41,18 +41,27 @@ public class AccountServiceImpl implements AccountService {
 
         log.info("Account with id: {} saved", account.getId());
         log.debug("Account: {} saved", account);
+
+        return mapToAccountResponse(account);
     }
 
     @Override
-    public void updateAccount(long id, UpdateAccountRequest request) {
+    public AccountResponse updateAccount(long id, UpdateAccountRequest request) {
         log.debug("updateAccount with parameters: {}, {} called", id, request);
 
-        AccountType accountType = accountTypeService.getAccountTypeByName(request.getAccountTypeName());
 
+        AccountType accountType = accountTypeService.getAccountTypeByName(request.getAccountTypeName());
         repository.updateAccountById(id, request.getName(), accountType);
+
+        String errorMessage = "Such Account not in database";
+        Account account = repository.findById(id).
+                orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
 
         log.info("Account with id: {} updated", id);
         log.debug("Account: {} updated", request);
+
+        return mapToAccountResponse(account);
+
     }
 
     @Override
@@ -126,6 +135,7 @@ public class AccountServiceImpl implements AccountService {
                 .name(account.getName())
                 .balance(account.getBalance().add(amount))
                 .build();
+
         repository.save(updatedAccount);
 
         log.info("Account with id: {} updated", updatedAccount.getId());

@@ -21,7 +21,7 @@ public class AccountTypeServiceImpl implements AccountTypeService {
     private final AccountTypeRepository repository;
 
     @Override
-    public void addAccountType(AccountTypeRequest request) {
+    public AccountTypeResponse addAccountType(AccountTypeRequest request) {
         log.debug("addAccountType with parameter: {} called", request);
 
         checkDuplicate(request.getName());
@@ -34,10 +34,12 @@ public class AccountTypeServiceImpl implements AccountTypeService {
 
         log.info("AccountType with id: {} saved", accountType.getId());
         log.debug("AccountType: {} saved", accountType);
+
+        return mapToAccountTypeResponse(accountType);
     }
 
     @Override
-    public void updateAccountType(long id, AccountTypeRequest request) {
+    public AccountTypeResponse updateAccountType(long id, AccountTypeRequest request) {
         log.debug("updateAccountType with parameters: {}, {} called", id, request);
 
         String errorMessage = "Such Account Type not in database";
@@ -47,6 +49,10 @@ public class AccountTypeServiceImpl implements AccountTypeService {
 
         log.info("AccountType with id: {} updated", id);
         log.debug("AccountType: {} updated", request);
+
+        return AccountTypeResponse.builder().id(id).name(request.getName()).build();
+
+
     }
 
     @Override
@@ -114,7 +120,7 @@ public class AccountTypeServiceImpl implements AccountTypeService {
     }
 
     private void checkDuplicate(String name) {
-        if (repository.findByName(name).isPresent()){
+        if (repository.findByName(name).isPresent()) {
             throw new DatabaseDuplicateException("Account Type with the same name already in the database");
         }
     }

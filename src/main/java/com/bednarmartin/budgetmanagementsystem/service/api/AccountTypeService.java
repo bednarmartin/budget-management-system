@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface AccountTypeService {
 
-    void addAccountType(AccountTypeRequest request);
+    AccountTypeResponse addAccountType(AccountTypeRequest request);
 
     @Transactional
-    void updateAccountType(long id, AccountTypeRequest request);
+    AccountTypeResponse updateAccountType(long id, AccountTypeRequest request);
 
     void deleteAccountTypeById(long id);
 

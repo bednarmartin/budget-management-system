@@ -2,8 +2,8 @@ package com.bednarmartin.budgetmanagementsystem.repository;
 
 import com.bednarmartin.budgetmanagementsystem.db.model.Account;
 import com.bednarmartin.budgetmanagementsystem.db.model.AccountType;
-import com.bednarmartin.budgetmanagementsystem.db.model.Transaction;
 import com.bednarmartin.budgetmanagementsystem.db.model.Category;
+import com.bednarmartin.budgetmanagementsystem.db.model.Transaction;
 import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
 import com.bednarmartin.budgetmanagementsystem.db.repository.AccountRepository;
 import com.bednarmartin.budgetmanagementsystem.db.repository.AccountTypeRepository;

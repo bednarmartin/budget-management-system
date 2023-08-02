@@ -10,10 +10,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface AccountService {
-    void addAccount(CreateAccountRequest request);
+    AccountResponse addAccount(CreateAccountRequest request);
 
     @Transactional
-    void updateAccount(long id, UpdateAccountRequest request);
+    AccountResponse updateAccount(long id, UpdateAccountRequest request);
 
     void deleteAccountById(long id);
 

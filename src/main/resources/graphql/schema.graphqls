@@ -12,7 +12,53 @@ type Query{
 
     getTransactionById(id: ID!) : Transaction
     getAllTransactions: [Transaction]!
+}
 
+type Mutation{
+    createAccount(request: CreateAccountRequest!) : Account
+    updateAccount(id: ID!, request: UpdateAccountRequest!) : Account
+    deleteAccount(id: ID!): String
+
+    createAccountType(request: AccountTypeRequest!) : AccountType
+    updateAccountType(id: ID!, request: AccountTypeRequest!) : AccountType
+    deleteAccountType(id: ID!): String
+
+    createCategory(request: CategoryRequest!) : Category
+    updateCategory(id: ID!, request: CategoryRequest!) : Category
+    deleteCategory(id: ID!): String
+
+    createTransaction(request: TransactionRequest) : Transaction
+    updateTransaction(id: ID!, request: TransactionRequest) : Transaction
+    deleteTransaction(id: ID!) : String
+
+}
+
+input TransactionRequest {
+    amount: Float
+    description: String
+    categoryName: String
+    type: TransactionType
+    accountName: String
+}
+
+input CategoryRequest {
+    name:String
+    transactionType: TransactionType
+}
+
+input AccountTypeRequest {
+    name:String
+}
+
+input UpdateAccountRequest {
+    name: String
+    accountTypeName: String
+}
+
+input CreateAccountRequest {
+    name: String
+    initialBalance: Float
+    accountTypeName: String
 }
 
 type Account{

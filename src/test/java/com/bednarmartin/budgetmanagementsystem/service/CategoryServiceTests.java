@@ -267,19 +267,19 @@ public class CategoryServiceTests {
         Assertions.assertEquals(4, responses.size());
 
         AmountSumByCategoryResponse response1 = categoryService.getAmountSumByCategoryByCategoryName("Utilities");
-        Assertions.assertEquals("Utilities", response1.getCategory());
+        Assertions.assertEquals("Utilities", response1.getCategory().getName());
         Assertions.assertEquals(BigDecimal.valueOf(0.50 + 49.98 + 5.00), response1.getSum());
 
         AmountSumByCategoryResponse response2 = categoryService.getAmountSumByCategoryByCategoryName("Investing");
-        Assertions.assertEquals("Investing", response2.getCategory());
+        Assertions.assertEquals("Investing", response2.getCategory().getName());
         Assertions.assertEquals(BigDecimal.valueOf(0.50).stripTrailingZeros(), response2.getSum().stripTrailingZeros());
 
         AmountSumByCategoryResponse response3 = categoryService.getAmountSumByCategoryByCategoryName("Salary");
-        Assertions.assertEquals("Salary", response3.getCategory());
+        Assertions.assertEquals("Salary", response3.getCategory().getName());
         Assertions.assertEquals(BigDecimal.valueOf(100).stripTrailingZeros(), response3.getSum().stripTrailingZeros());
 
         AmountSumByCategoryResponse response4 = categoryService.getAmountSumByCategoryByCategoryName("Healthcare");
-        Assertions.assertEquals("Healthcare", response4.getCategory());
+        Assertions.assertEquals("Healthcare", response4.getCategory().getName());
         Assertions.assertEquals(BigDecimal.ZERO.stripTrailingZeros(), response4.getSum().stripTrailingZeros());
 
         Assertions.assertEquals(new HashSet<>(responses), new HashSet<>(List.of(response1, response2, response3, response4)));

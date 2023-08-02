@@ -1,8 +1,8 @@
 package com.bednarmartin.budgetmanagementsystem.service.impl;
 
 import com.bednarmartin.budgetmanagementsystem.db.model.Account;
-import com.bednarmartin.budgetmanagementsystem.db.model.Transaction;
 import com.bednarmartin.budgetmanagementsystem.db.model.Category;
+import com.bednarmartin.budgetmanagementsystem.db.model.Transaction;
 import com.bednarmartin.budgetmanagementsystem.db.repository.TransactionRepository;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
 import com.bednarmartin.budgetmanagementsystem.exception.TransactionTypeMismatchException;
@@ -30,7 +30,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final AccountService accountService;
 
     @Override
-    public void addTransaction(TransactionRequest request) {
+    public TransactionResponse addTransaction(TransactionRequest request) {
         log.debug("addTransaction with parameter: {} called", request);
 
         Category category = categoryService.getCategoryByName(request.getCategoryName());
@@ -54,10 +54,12 @@ public class TransactionServiceImpl implements TransactionService {
         log.info("Transaction with id: {} saved", transaction.getId());
         log.debug("Transaction: {} saved", transaction);
 
+        return mapTransactionResponse(transaction);
+
     }
 
     @Override
-    public void updateTransaction(long id, TransactionRequest request) {
+    public TransactionResponse updateTransaction(long id, TransactionRequest request) {
         log.debug("updateTransaction with parameters: {}, {} called", id, request);
 
         Category category = categoryService.getCategoryByName(request.getCategoryName());
@@ -74,8 +76,13 @@ public class TransactionServiceImpl implements TransactionService {
                 account,
                 actualTime);
 
+        String errorMessage = "Such Transaction not in database";
+        Transaction transaction = repository.findById(id).orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
+
         log.info("Transaction with id: {} updated", id);
         log.debug("Transaction: {} updated", request);
+
+        return mapTransactionResponse(transaction);
     }
 
     @Override
@@ -132,9 +139,7 @@ public class TransactionServiceImpl implements TransactionService {
         switch (request.getType()) {
             case INCOME -> accountService.addToBalance(account, request.getAmount());
             case EXPENSE -> accountService.subtractFromBalance(account, request.getAmount());
-            case TRANSFER -> {
-            }
+            case TRANSFER -> throw new UnsupportedOperationException();
         }
     }
-
 }

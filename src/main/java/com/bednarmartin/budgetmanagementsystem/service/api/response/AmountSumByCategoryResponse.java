@@ -1,6 +1,10 @@
 package com.bednarmartin.budgetmanagementsystem.service.api.response;
 
-import lombok.*;
+import com.bednarmartin.budgetmanagementsystem.db.model.Category;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
 import java.math.BigDecimal;
@@ -11,7 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class AmountSumByCategoryResponse {
     @NonNull
-    String category;
+    Category category;
 
     BigDecimal sum;
 }

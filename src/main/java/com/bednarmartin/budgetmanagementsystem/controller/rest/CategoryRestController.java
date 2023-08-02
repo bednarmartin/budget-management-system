@@ -1,4 +1,4 @@
-package com.bednarmartin.budgetmanagementsystem.controller;
+package com.bednarmartin.budgetmanagementsystem.controller.rest;
 
 import com.bednarmartin.budgetmanagementsystem.exception.DatabaseDuplicateException;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/category")
 @RequiredArgsConstructor
-public class CategoryController {
+public class CategoryRestController {
 
     private final CategoryService categoryService;
 

@@ -1,11 +1,10 @@
-package com.bednarmartin.budgetmanagementsystem.controller;
+package com.bednarmartin.budgetmanagementsystem.controller.rest;
 
 import com.bednarmartin.budgetmanagementsystem.exception.DatabaseDuplicateException;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
-import com.bednarmartin.budgetmanagementsystem.service.api.AccountService;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateAccountRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountResponse;
+import com.bednarmartin.budgetmanagementsystem.service.api.TransactionService;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.response.TransactionResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,50 +16,49 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/api/transaction")
 @RequiredArgsConstructor
-public class AccountController {
+public class TransactionRestController {
 
-    private final AccountService accountService;
+    private final TransactionService transactionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<AccountResponse> getAccountById(@PathVariable long id) {
-        AccountResponse accountResponse = null;
+    public ResponseEntity<TransactionResponse> getTransactionById(@PathVariable long id) {
+        TransactionResponse response = null;
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            accountResponse = accountService.getAccountById(id);
+            response = transactionService.getTransactionById(id);
         } catch (SuchElementNotInDatabaseException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(accountResponse, httpStatus);
-
+        return new ResponseEntity<>(response, httpStatus);
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountResponse>> getAllAccounts() {
-        List<AccountResponse> accountResponses = new ArrayList<>();
+    public ResponseEntity<List<TransactionResponse>> getAllTransactions() {
+        List<TransactionResponse> responses = new ArrayList<>();
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            accountResponses = accountService.getAllAccounts();
+            responses = transactionService.getAllTransactions();
         } catch (Exception e) {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(accountResponses, httpStatus);
+        return new ResponseEntity<>(responses, httpStatus);
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> addAccount(@Valid @RequestBody CreateAccountRequest request) {
-        String message = "Account created successfully";
+    public ResponseEntity<Map<String, String>> addTransaction(@Valid @RequestBody TransactionRequest request) {
         HttpStatus httpStatus = HttpStatus.CREATED;
+        String message = "Transaction created successfully";
 
         try {
-            accountService.addAccount(request);
+            transactionService.addTransaction(request);
         } catch (DatabaseDuplicateException e) {
             message = e.getMessage();
             httpStatus = HttpStatus.BAD_REQUEST;
@@ -74,12 +72,12 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> deleteAccount(@PathVariable long id) {
-        String message = "Account deleted successfully";
+    public ResponseEntity<Map<String, String>> deleteTransaction(@PathVariable long id) {
         HttpStatus httpStatus = HttpStatus.OK;
+        String message = "Transaction deleted successfully";
 
         try {
-            accountService.deleteAccountById(id);
+            transactionService.deleteTransactionById(id);
         } catch (SuchElementNotInDatabaseException e) {
             message = e.getMessage();
             httpStatus = HttpStatus.BAD_REQUEST;
@@ -89,16 +87,14 @@ public class AccountController {
         }
 
         return new ResponseEntity<>(Map.of("message", message), httpStatus);
-
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, String>> updateAccount(@PathVariable long id, @Valid @RequestBody UpdateAccountRequest request) {
+    public ResponseEntity<Map<String, String>> updateTransaction(@PathVariable long id, @Valid @RequestBody TransactionRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
-        String message = "Account updated successfully";
-
+        String message = "Transaction updated successfully";
         try {
-            accountService.updateAccount(id, request);
+            transactionService.updateTransaction(id, request);
         } catch (SuchElementNotInDatabaseException e) {
             message = e.getMessage();
             httpStatus = HttpStatus.BAD_REQUEST;
@@ -109,4 +105,6 @@ public class AccountController {
 
         return new ResponseEntity<>(Map.of("message", message), httpStatus);
     }
+
+
 }

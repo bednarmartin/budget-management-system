@@ -1,0 +1,54 @@
+type Query{
+    getAccountById(id: ID!) : Account
+    getAllAccounts: [Account]!
+
+    getAccountTypeById(id: ID!) : AccountType
+    getAllAccountTypes: [AccountType]!
+
+    getCategoryById(id: ID!) : Category
+    getAllCategories: [Category]!
+    getAllBalances: [AmountSumByCategory]!
+    getBalanceByName(categoryName: String) : AmountSumByCategory
+
+    getTransactionById(id: ID!) : Transaction
+    getAllTransactions: [Transaction]!
+
+}
+
+type Account{
+    id: ID!
+    name: String!
+    balance: Float!,
+    accountType: AccountType!
+}
+
+type AccountType{
+    id: ID!
+    name: String!
+}
+
+type Category{
+    id: ID!
+    name: String!
+    transactionType: TransactionType!
+}
+
+type Transaction {
+    id: ID!
+    amount: Float!
+    description: String!
+    type: TransactionType!
+    account: Account!
+    category: Category!
+}
+
+enum TransactionType{
+    INCOME
+    EXPENSE
+    TRANSFER
+}
+
+type AmountSumByCategory{
+    category: String
+    sum: Float
+}

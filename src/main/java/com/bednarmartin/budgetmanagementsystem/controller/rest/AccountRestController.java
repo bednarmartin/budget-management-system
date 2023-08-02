@@ -1,10 +1,11 @@
-package com.bednarmartin.budgetmanagementsystem.controller;
+package com.bednarmartin.budgetmanagementsystem.controller.rest;
 
 import com.bednarmartin.budgetmanagementsystem.exception.DatabaseDuplicateException;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
-import com.bednarmartin.budgetmanagementsystem.service.api.AccountTypeService;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountTypeResponse;
+import com.bednarmartin.budgetmanagementsystem.service.api.AccountService;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateAccountRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,50 +17,50 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/account/type")
+@RequestMapping("/api/account")
 @RequiredArgsConstructor
-public class AccountTypeController {
+public class AccountRestController {
 
-    private final AccountTypeService accountTypeService;
+    private final AccountService accountService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<AccountTypeResponse> getAccountTypeById(@PathVariable long id) {
-        AccountTypeResponse accountTypeResponse = null;
+    public ResponseEntity<AccountResponse> getAccountById(@PathVariable long id) {
+        AccountResponse accountResponse = null;
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            accountTypeResponse = accountTypeService.getAccountTypeById(id);
+            accountResponse = accountService.getAccountById(id);
         } catch (SuchElementNotInDatabaseException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(accountTypeResponse, httpStatus);
+        return new ResponseEntity<>(accountResponse, httpStatus);
 
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountTypeResponse>> getAllAccountTypes() {
-        List<AccountTypeResponse> accountTypeResponses = new ArrayList<>();
+    public ResponseEntity<List<AccountResponse>> getAllAccounts() {
+        List<AccountResponse> accountResponses = new ArrayList<>();
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            accountTypeResponses = accountTypeService.getAllAccountTypes();
+            accountResponses = accountService.getAllAccounts();
         } catch (Exception e) {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(accountTypeResponses, httpStatus);
+        return new ResponseEntity<>(accountResponses, httpStatus);
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> addAccountType(@Valid @RequestBody AccountTypeRequest request) {
+    public ResponseEntity<Map<String, String>> addAccount(@Valid @RequestBody CreateAccountRequest request) {
+        String message = "Account created successfully";
         HttpStatus httpStatus = HttpStatus.CREATED;
-        String message = "Account Type created successfully";
 
         try {
-            accountTypeService.addAccountType(request);
+            accountService.addAccount(request);
         } catch (DatabaseDuplicateException e) {
             message = e.getMessage();
             httpStatus = HttpStatus.BAD_REQUEST;
@@ -73,12 +74,12 @@ public class AccountTypeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> deleteAccountType(@PathVariable long id) {
+    public ResponseEntity<Map<String, String>> deleteAccount(@PathVariable long id) {
+        String message = "Account deleted successfully";
         HttpStatus httpStatus = HttpStatus.OK;
-        String message = "Account Type deleted successfully";
 
         try {
-            accountTypeService.deleteAccountTypeById(id);
+            accountService.deleteAccountById(id);
         } catch (SuchElementNotInDatabaseException e) {
             message = e.getMessage();
             httpStatus = HttpStatus.BAD_REQUEST;
@@ -92,11 +93,12 @@ public class AccountTypeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, String>> updateAccountType(@PathVariable long id, @Valid @RequestBody AccountTypeRequest request) {
+    public ResponseEntity<Map<String, String>> updateAccount(@PathVariable long id, @Valid @RequestBody UpdateAccountRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
-        String message = "Account Type updated successfully";
+        String message = "Account updated successfully";
+
         try {
-            accountTypeService.updateAccountType(id, request);
+            accountService.updateAccount(id, request);
         } catch (SuchElementNotInDatabaseException e) {
             message = e.getMessage();
             httpStatus = HttpStatus.BAD_REQUEST;

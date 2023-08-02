@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/category")
@@ -53,7 +54,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addCategory(@Valid @RequestBody CategoryRequest request) {
+    public ResponseEntity<Map<String, String>> addCategory(@Valid @RequestBody CategoryRequest request) {
         HttpStatus httpStatus = HttpStatus.CREATED;
         String message = "Category created successfully";
 
@@ -67,11 +68,11 @@ public class CategoryController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(message, httpStatus);
+        return new ResponseEntity<>(Map.of("message", message), httpStatus);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable long id) {
+    public ResponseEntity<Map<String, String>> deleteCategory(@PathVariable long id) {
         HttpStatus httpStatus = HttpStatus.OK;
         String message = "Category deleted successfully";
 
@@ -85,11 +86,11 @@ public class CategoryController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(message, httpStatus);
+        return new ResponseEntity<>(Map.of("message", message), httpStatus);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateCategory(@PathVariable long id, @Valid @RequestBody CategoryRequest request) {
+    public ResponseEntity<Map<String, String>> updateCategory(@PathVariable long id, @Valid @RequestBody CategoryRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         String message = "Category updated successfully";
         try {
@@ -102,7 +103,7 @@ public class CategoryController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(message, httpStatus);
+        return new ResponseEntity<>(Map.of("message", message), httpStatus);
     }
 
     @GetMapping("/balances")

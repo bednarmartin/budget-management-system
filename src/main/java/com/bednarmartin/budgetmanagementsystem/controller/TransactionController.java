@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/transaction")
@@ -52,7 +53,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addTransaction(@Valid @RequestBody TransactionRequest request) {
+    public ResponseEntity<Map<String, String>> addTransaction(@Valid @RequestBody TransactionRequest request) {
         HttpStatus httpStatus = HttpStatus.CREATED;
         String message = "Transaction created successfully";
 
@@ -66,12 +67,12 @@ public class TransactionController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(message, httpStatus);
+        return new ResponseEntity<>(Map.of("message", message), httpStatus);
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTransaction(@PathVariable long id) {
+    public ResponseEntity<Map<String, String>> deleteTransaction(@PathVariable long id) {
         HttpStatus httpStatus = HttpStatus.OK;
         String message = "Transaction deleted successfully";
 
@@ -85,11 +86,11 @@ public class TransactionController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(message, httpStatus);
+        return new ResponseEntity<>(Map.of("message", message), httpStatus);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateTransaction(@PathVariable long id, @Valid @RequestBody TransactionRequest request) {
+    public ResponseEntity<Map<String, String>> updateTransaction(@PathVariable long id, @Valid @RequestBody TransactionRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         String message = "Transaction updated successfully";
         try {
@@ -102,7 +103,7 @@ public class TransactionController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(message, httpStatus);
+        return new ResponseEntity<>(Map.of("message", message), httpStatus);
     }
 
 

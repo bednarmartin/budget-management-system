@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/account")
@@ -54,7 +55,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addAccount(@Valid @RequestBody CreateAccountRequest request) {
+    public ResponseEntity<Map<String, String>> addAccount(@Valid @RequestBody CreateAccountRequest request) {
         String message = "Account created successfully";
         HttpStatus httpStatus = HttpStatus.CREATED;
 
@@ -68,12 +69,12 @@ public class AccountController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(message, httpStatus);
+        return new ResponseEntity<>(Map.of("message", message), httpStatus);
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteAccount(@PathVariable long id) {
+    public ResponseEntity<Map<String, String>> deleteAccount(@PathVariable long id) {
         String message = "Account deleted successfully";
         HttpStatus httpStatus = HttpStatus.OK;
 
@@ -87,12 +88,12 @@ public class AccountController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(message, httpStatus);
+        return new ResponseEntity<>(Map.of("message", message), httpStatus);
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateAccount(@PathVariable long id, @Valid @RequestBody UpdateAccountRequest request) {
+    public ResponseEntity<Map<String, String>> updateAccount(@PathVariable long id, @Valid @RequestBody UpdateAccountRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         String message = "Account updated successfully";
 
@@ -106,8 +107,6 @@ public class AccountController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(message, httpStatus);
-
-
+        return new ResponseEntity<>(Map.of("message", message), httpStatus);
     }
 }

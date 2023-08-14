@@ -42,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
         log.info("Account with id: {} saved", account.getId());
         log.debug("Account: {} saved", account);
 
-        return mapToAccountResponse(account);
+        return AccountService.mapToAccountResponse(account);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class AccountServiceImpl implements AccountService {
         log.info("Account with id: {} updated", id);
         log.debug("Account: {} updated", request);
 
-        return mapToAccountResponse(account);
+        return AccountService.mapToAccountResponse(account);
 
     }
 
@@ -78,7 +78,7 @@ public class AccountServiceImpl implements AccountService {
         String errorMessage = "Such Account not in database";
         Account account = repository.findById(id).
                 orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
-        AccountResponse accountResponse = mapToAccountResponse(account);
+        AccountResponse accountResponse = AccountService.mapToAccountResponse(account);
 
         log.debug("AccountResponse: {} returned", accountResponse);
         log.info("AccountResponse with id: {} returned", id);
@@ -92,7 +92,7 @@ public class AccountServiceImpl implements AccountService {
         List<Account> accounts = repository.findAll();
 
         log.info("all AccountResponse returned");
-        return accounts.stream().map(this::mapToAccountResponse).toList();
+        return accounts.stream().map(AccountService::mapToAccountResponse).toList();
     }
 
     @Override
@@ -142,12 +142,4 @@ public class AccountServiceImpl implements AccountService {
         log.debug("Updated Account: {}", account);
     }
 
-    private AccountResponse mapToAccountResponse(Account account) {
-        return AccountResponse.builder()
-                .id(account.getId())
-                .name(account.getName())
-                .accountType(account.getAccountType())
-                .balance(account.getBalance())
-                .build();
-    }
 }

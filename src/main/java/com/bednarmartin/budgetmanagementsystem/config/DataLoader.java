@@ -7,7 +7,7 @@ import com.bednarmartin.budgetmanagementsystem.service.api.TransactionService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateTransactionRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -60,9 +60,9 @@ public class DataLoader implements CommandLineRunner {
         }
 
         try (InputStream inputStream = TypeReference.class.getResourceAsStream("/data/transactions.json")) {
-            List<TransactionRequest> requests = objectMapper.readValue(inputStream, new TypeReference<>() {
+            List<CreateTransactionRequest> requests = objectMapper.readValue(inputStream, new TypeReference<>() {
             });
-            for (TransactionRequest request : requests) {
+            for (CreateTransactionRequest request : requests) {
                 transactionService.addTransaction(request);
             }
         }

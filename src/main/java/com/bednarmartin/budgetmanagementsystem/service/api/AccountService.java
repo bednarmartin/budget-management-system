@@ -29,5 +29,20 @@ public interface AccountService {
     @Transactional
     void addToBalance(Account account, BigDecimal amount);
 
+    static AccountResponse mapToAccountResponse(Account account) {
+        return AccountResponse.builder()
+                .id(account.getId())
+                .name(account.getName())
+                .accountType(account.getAccountType())
+                .balance(account.getBalance())
+                .build();
+    }
+
+    static UpdateAccountRequest mapToUpdateAccountRequest(Account account) {
+        return UpdateAccountRequest.builder()
+                .name(account.getName())
+                .accountTypeName(account.getAccountType().getName())
+                .build();
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.bednarmartin.budgetmanagementsystem.controller;
+package com.bednarmartin.budgetmanagementsystem.controller.rest;
 
 import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountTypeResponse;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-public class AccountTypeRESTControllerTests {
+public class AccountTypeRestControllerTests {
 
     private static ObjectMapper objectMapper;
     private final String URL = "/api/account/type";

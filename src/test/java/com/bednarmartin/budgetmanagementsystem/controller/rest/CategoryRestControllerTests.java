@@ -1,10 +1,10 @@
-package com.bednarmartin.budgetmanagementsystem.controller;
+package com.bednarmartin.budgetmanagementsystem.controller.rest;
 
 import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateTransactionRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.CategoryResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-class CategoryRESTControllerTests {
+class CategoryRestControllerTests {
 
     private static ObjectMapper objectMapper;
     private final String URL = "/api/category";
@@ -250,7 +250,7 @@ class CategoryRESTControllerTests {
         String categoryName = "Groceries";
 
         for (int i = 0; i < descriptions.length; i++) {
-            TransactionRequest request = TransactionRequest.builder()
+            CreateTransactionRequest request = CreateTransactionRequest.builder()
                     .categoryName(categoryName)
                     .description(descriptions[i])
                     .amount(prices[i])

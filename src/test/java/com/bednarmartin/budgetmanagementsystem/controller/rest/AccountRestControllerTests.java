@@ -1,4 +1,4 @@
-package com.bednarmartin.budgetmanagementsystem.controller;
+package com.bednarmartin.budgetmanagementsystem.controller.rest;
 
 import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;

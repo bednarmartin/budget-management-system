@@ -9,7 +9,7 @@ import com.bednarmartin.budgetmanagementsystem.service.api.TransactionService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateTransactionRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.CategoryResponse;
 import org.junit.jupiter.api.Assertions;
@@ -70,7 +70,7 @@ public class CategoryServiceTests {
     @Test
     public void testAddMoreCategories() throws InterruptedException {
         String[] names = {"Utilities", "Groceries", "Health"};
-        TransactionType[] types = {TransactionType.EXPENSE, TransactionType.INCOME, TransactionType.TRANSFER};
+        TransactionType[] types = {TransactionType.EXPENSE, TransactionType.INCOME, TransactionType.EXPENSE};
 
         LocalDateTime start = LocalDateTime.now();
         Thread.sleep(100);
@@ -217,7 +217,7 @@ public class CategoryServiceTests {
         categoryService.addCategory(categoryRequest4);
 
 
-        TransactionRequest request1 = TransactionRequest.builder()
+        CreateTransactionRequest request1 = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(5.00))
                 .description("Bill")
                 .categoryName("Utilities")
@@ -225,7 +225,7 @@ public class CategoryServiceTests {
                 .type(TransactionType.EXPENSE)
                 .build();
 
-        TransactionRequest request2 = TransactionRequest.builder()
+        CreateTransactionRequest request2 = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(100.00))
                 .description("Salary bonus 1")
                 .categoryName("Salary")
@@ -233,7 +233,7 @@ public class CategoryServiceTests {
                 .type(TransactionType.INCOME)
                 .build();
 
-        TransactionRequest request3 = TransactionRequest.builder()
+        CreateTransactionRequest request3 = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(49.98))
                 .description("Bill 2")
                 .categoryName("Utilities")
@@ -241,7 +241,7 @@ public class CategoryServiceTests {
                 .type(TransactionType.EXPENSE)
                 .build();
 
-        TransactionRequest request4 = TransactionRequest.builder()
+        CreateTransactionRequest request4 = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(0.50))
                 .description("Interest")
                 .categoryName("Investing")
@@ -249,7 +249,7 @@ public class CategoryServiceTests {
                 .type(TransactionType.INCOME)
                 .build();
 
-        TransactionRequest request5 = TransactionRequest.builder()
+        CreateTransactionRequest request5 = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(0.50))
                 .description("Interest")
                 .categoryName("Utilities")

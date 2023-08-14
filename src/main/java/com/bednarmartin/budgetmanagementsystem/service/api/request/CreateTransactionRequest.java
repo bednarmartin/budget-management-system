@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionRequest {
+public class CreateTransactionRequest {
 
     @Positive(message = "The amount must be positive")
     @NotNull(message = "The amount is required!")

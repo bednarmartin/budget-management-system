@@ -3,7 +3,7 @@ package com.bednarmartin.budgetmanagementsystem.controller.rest;
 import com.bednarmartin.budgetmanagementsystem.exception.DatabaseDuplicateException;
 import com.bednarmartin.budgetmanagementsystem.exception.SuchElementNotInDatabaseException;
 import com.bednarmartin.budgetmanagementsystem.service.api.TransactionService;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateTransactionRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.TransactionResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +53,7 @@ public class TransactionRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> addTransaction(@Valid @RequestBody TransactionRequest request) {
+    public ResponseEntity<Map<String, String>> addTransaction(@Valid @RequestBody CreateTransactionRequest request) {
         HttpStatus httpStatus = HttpStatus.CREATED;
         String message = "Transaction created successfully";
 
@@ -90,7 +90,7 @@ public class TransactionRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, String>> updateTransaction(@PathVariable long id, @Valid @RequestBody TransactionRequest request) {
+    public ResponseEntity<Map<String, String>> updateTransaction(@PathVariable long id, @Valid @RequestBody CreateTransactionRequest request) {
         HttpStatus httpStatus = HttpStatus.OK;
         String message = "Transaction updated successfully";
         try {

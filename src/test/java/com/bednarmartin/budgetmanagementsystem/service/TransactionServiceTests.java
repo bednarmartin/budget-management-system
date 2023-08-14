@@ -9,7 +9,7 @@ import com.bednarmartin.budgetmanagementsystem.service.api.TransactionService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateTransactionRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountResponse;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.TransactionResponse;
 import org.junit.jupiter.api.Assertions;
@@ -70,7 +70,7 @@ public class TransactionServiceTests {
 
     @Test
     public void testAddOneTransaction() throws InterruptedException {
-        TransactionRequest request = TransactionRequest.builder()
+        CreateTransactionRequest request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(51.99))
                 .description("Electricity bill")
                 .categoryName("Utilities")
@@ -108,7 +108,7 @@ public class TransactionServiceTests {
         LocalDateTime start = LocalDateTime.now();
         Thread.sleep(100);
         for (int i = 0; i < descriptions.length; i++) {
-            TransactionRequest request = TransactionRequest.builder()
+            CreateTransactionRequest request = CreateTransactionRequest.builder()
                     .amount(amounts[i])
                     .description(descriptions[i])
                     .categoryName("Utilities")
@@ -141,7 +141,7 @@ public class TransactionServiceTests {
 
     @Test
     public void testUpdateExpenseCategory() {
-        TransactionRequest request = TransactionRequest.builder()
+        CreateTransactionRequest request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(51.99))
                 .description("Electricity bill")
                 .categoryName("Utilities")
@@ -152,7 +152,7 @@ public class TransactionServiceTests {
         transactionService.addTransaction(request);
         TransactionResponse response = transactionService.getAllTransactions().get(0);
 
-        TransactionRequest updateRequest = TransactionRequest.builder()
+        CreateTransactionRequest updateRequest = CreateTransactionRequest.builder()
                 .categoryName("Utilities")
                 .description("Candy")
                 .amount(BigDecimal.valueOf(23.19))
@@ -174,7 +174,7 @@ public class TransactionServiceTests {
 
     @Test
     public void testDeleteExpenseCategoryById() {
-        TransactionRequest request = TransactionRequest.builder()
+        CreateTransactionRequest request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(51.99))
                 .description("Electricity bill")
                 .categoryName("Utilities")
@@ -194,7 +194,7 @@ public class TransactionServiceTests {
 
     @Test
     public void testAddingTransactionWithTypeMismatch() {
-        TransactionRequest request = TransactionRequest.builder()
+        CreateTransactionRequest request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(51.99))
                 .description("Electricity bill")
                 .categoryName("Utilities")
@@ -207,7 +207,7 @@ public class TransactionServiceTests {
 
     @Test
     public void testUpdatingTransactionWithTypeMismatch() {
-        TransactionRequest request = TransactionRequest.builder()
+        CreateTransactionRequest request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(51.99))
                 .description("Electricity bill")
                 .categoryName("Utilities")
@@ -217,7 +217,7 @@ public class TransactionServiceTests {
         transactionService.addTransaction(request);
         TransactionResponse response = transactionService.getAllTransactions().get(0);
 
-        TransactionRequest updateRequest = TransactionRequest.builder()
+        CreateTransactionRequest updateRequest = CreateTransactionRequest.builder()
                 .categoryName("Utilities")
                 .description("Candy")
                 .accountName("Cash account")
@@ -230,7 +230,7 @@ public class TransactionServiceTests {
 
     @Test
     public void testUpdatingBalanceWithIncomeTransaction() {
-        TransactionRequest request = TransactionRequest.builder()
+        CreateTransactionRequest request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(20.00))
                 .description("Bonus")
                 .categoryName("Salary")
@@ -244,7 +244,7 @@ public class TransactionServiceTests {
 
     @Test
     public void testUpdatingBalanceWithExpenseTransaction() {
-        TransactionRequest request = TransactionRequest.builder()
+        CreateTransactionRequest request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(5.00))
                 .description("Bill")
                 .categoryName("Utilities")
@@ -258,7 +258,7 @@ public class TransactionServiceTests {
 
     @Test
     public void testUpdatingBalanceWithMoreTransactions() {
-        TransactionRequest request1 = TransactionRequest.builder()
+        CreateTransactionRequest request1 = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(5.00))
                 .description("Bill")
                 .categoryName("Utilities")
@@ -266,7 +266,7 @@ public class TransactionServiceTests {
                 .type(TransactionType.EXPENSE)
                 .build();
 
-        TransactionRequest request2 = TransactionRequest.builder()
+        CreateTransactionRequest request2 = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(100.00))
                 .description("Salary bonus 1")
                 .categoryName("Salary")
@@ -274,7 +274,7 @@ public class TransactionServiceTests {
                 .type(TransactionType.INCOME)
                 .build();
 
-        TransactionRequest request3 = TransactionRequest.builder()
+        CreateTransactionRequest request3 = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(49.98))
                 .description("Bill 2")
                 .categoryName("Utilities")
@@ -282,7 +282,7 @@ public class TransactionServiceTests {
                 .type(TransactionType.EXPENSE)
                 .build();
 
-        TransactionRequest request4 = TransactionRequest.builder()
+        CreateTransactionRequest request4 = CreateTransactionRequest.builder()
                 .amount(BigDecimal.valueOf(0.50))
                 .description("Interest")
                 .categoryName("Salary")

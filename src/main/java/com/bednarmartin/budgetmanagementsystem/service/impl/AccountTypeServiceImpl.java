@@ -35,7 +35,7 @@ public class AccountTypeServiceImpl implements AccountTypeService {
         log.info("AccountType with id: {} saved", accountType.getId());
         log.debug("AccountType: {} saved", accountType);
 
-        return mapToAccountTypeResponse(accountType);
+        return AccountTypeService.mapToAccountTypeResponse(accountType);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class AccountTypeServiceImpl implements AccountTypeService {
         String errorMessage = "Such Account Type not in database";
         AccountType accountType = repository.findById(id).
                 orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
-        AccountTypeResponse accountTypeResponse = mapToAccountTypeResponse(accountType);
+        AccountTypeResponse accountTypeResponse = AccountTypeService.mapToAccountTypeResponse(accountType);
 
         log.debug("AccountTypeResponse: {} returned", accountTypeResponse);
         log.info("AccountTypeResponse with id: {} returned", id);
@@ -84,7 +84,7 @@ public class AccountTypeServiceImpl implements AccountTypeService {
         List<AccountType> accountTypes = repository.findAll();
 
         log.info("all AccountTypeResponse returned");
-        return accountTypes.stream().map(this::mapToAccountTypeResponse).toList();
+        return accountTypes.stream().map(AccountTypeService::mapToAccountTypeResponse).toList();
     }
 
     @Override
@@ -112,12 +112,6 @@ public class AccountTypeServiceImpl implements AccountTypeService {
         log.info("AccountType with name: {} deleted", name);
     }
 
-    private AccountTypeResponse mapToAccountTypeResponse(AccountType accountType) {
-        return AccountTypeResponse.builder()
-                .id(accountType.getId())
-                .name(accountType.getName())
-                .build();
-    }
 
     private void checkDuplicate(String name) {
         if (repository.findByName(name).isPresent()) {

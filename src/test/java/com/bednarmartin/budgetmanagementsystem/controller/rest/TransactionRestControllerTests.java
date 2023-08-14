@@ -1,10 +1,10 @@
-package com.bednarmartin.budgetmanagementsystem.controller;
+package com.bednarmartin.budgetmanagementsystem.controller.rest;
 
 import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.AccountTypeRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CategoryRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
-import com.bednarmartin.budgetmanagementsystem.service.api.request.TransactionRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateTransactionRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.TransactionResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-public class TransactionRESTControllerTests {
+public class TransactionRestControllerTests {
 
     private final String URL = "/api/transaction";
     @Autowired
@@ -90,7 +90,7 @@ public class TransactionRESTControllerTests {
         String description = "Food";
         BigDecimal price = BigDecimal.valueOf(10.59);
 
-        TransactionRequest request = TransactionRequest.builder()
+        CreateTransactionRequest request = CreateTransactionRequest.builder()
                 .amount(price)
                 .description(description)
                 .categoryName(categoryName)
@@ -130,7 +130,7 @@ public class TransactionRESTControllerTests {
         String categoryName = "Groceries";
 
         for (int i = 0; i < descriptions.length; i++) {
-            TransactionRequest request = TransactionRequest.builder()
+            CreateTransactionRequest request = CreateTransactionRequest.builder()
                     .categoryName(categoryName)
                     .description(descriptions[i])
                     .amount(prices[i])
@@ -174,7 +174,7 @@ public class TransactionRESTControllerTests {
         String description = "Food";
         BigDecimal price = BigDecimal.valueOf(10.59);
 
-        TransactionRequest request = TransactionRequest.builder()
+        CreateTransactionRequest request = CreateTransactionRequest.builder()
                 .amount(price)
                 .description(description)
                 .categoryName(categoryName)
@@ -190,7 +190,7 @@ public class TransactionRESTControllerTests {
 
 
         BigDecimal newPrice = BigDecimal.valueOf(12.59);
-        TransactionRequest updateRequest = TransactionRequest.builder()
+        CreateTransactionRequest updateRequest = CreateTransactionRequest.builder()
                 .amount(newPrice)
                 .description(description)
                 .categoryName(categoryName)
@@ -228,7 +228,7 @@ public class TransactionRESTControllerTests {
         String description = "Food";
         BigDecimal price = BigDecimal.valueOf(10.59);
 
-        TransactionRequest request = TransactionRequest.builder()
+        CreateTransactionRequest request = CreateTransactionRequest.builder()
                 .amount(price)
                 .description(description)
                 .categoryName(categoryName)
@@ -275,7 +275,7 @@ public class TransactionRESTControllerTests {
         String badAccountName2 = "OK";
 
         // Empty request
-        TransactionRequest request = TransactionRequest.builder().build();
+        CreateTransactionRequest request = CreateTransactionRequest.builder().build();
 
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -283,7 +283,7 @@ public class TransactionRESTControllerTests {
                 .andExpect(status().isBadRequest());
 
         //Request without amount
-        request = TransactionRequest.builder()
+        request = CreateTransactionRequest.builder()
                 .description("description")
                 .categoryName("categoryName")
                 .type(TransactionType.EXPENSE)
@@ -296,7 +296,7 @@ public class TransactionRESTControllerTests {
                 .andExpect(status().isBadRequest());
 
         //Request without type
-        request = TransactionRequest.builder()
+        request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.TEN)
                 .description("description")
                 .categoryName("categoryName")
@@ -309,7 +309,7 @@ public class TransactionRESTControllerTests {
                 .andExpect(status().isBadRequest());
 
         //Request without accountName
-        request = TransactionRequest.builder()
+        request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.TEN)
                 .type(TransactionType.EXPENSE)
                 .description("description")
@@ -322,7 +322,7 @@ public class TransactionRESTControllerTests {
                 .andExpect(status().isBadRequest());
 
         //Request without description
-        request = TransactionRequest.builder()
+        request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.TEN)
                 .type(TransactionType.EXPENSE)
                 .categoryName("categoryName")
@@ -335,7 +335,7 @@ public class TransactionRESTControllerTests {
                 .andExpect(status().isBadRequest());
 
         //Request without categoryName
-        request = TransactionRequest.builder()
+        request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.TEN)
                 .type(TransactionType.EXPENSE)
                 .description("description")
@@ -348,7 +348,7 @@ public class TransactionRESTControllerTests {
                 .andExpect(status().isBadRequest());
 
         // Request with bad balance
-        request = TransactionRequest.builder()
+        request = CreateTransactionRequest.builder()
                 .amount(badAmount1)
                 .type(TransactionType.EXPENSE)
                 .description("description")
@@ -361,7 +361,7 @@ public class TransactionRESTControllerTests {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
 
-        request = TransactionRequest.builder()
+        request = CreateTransactionRequest.builder()
                 .amount(badAmount2)
                 .type(TransactionType.EXPENSE)
                 .description("description")
@@ -375,7 +375,7 @@ public class TransactionRESTControllerTests {
                 .andExpect(status().isBadRequest());
 
         // Request with bad description
-        request = TransactionRequest.builder()
+        request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.TEN)
                 .type(TransactionType.EXPENSE)
                 .description(badDescription)
@@ -389,7 +389,7 @@ public class TransactionRESTControllerTests {
                 .andExpect(status().isBadRequest());
 
         // Request with bad categoryName
-        request = TransactionRequest.builder()
+        request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.TEN)
                 .type(TransactionType.EXPENSE)
                 .description("description")
@@ -403,7 +403,7 @@ public class TransactionRESTControllerTests {
                 .andExpect(status().isBadRequest());
 
         // Request with bad accountName
-        request = TransactionRequest.builder()
+        request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.TEN)
                 .type(TransactionType.EXPENSE)
                 .description("description")
@@ -416,7 +416,7 @@ public class TransactionRESTControllerTests {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
 
-        request = TransactionRequest.builder()
+        request = CreateTransactionRequest.builder()
                 .amount(BigDecimal.TEN)
                 .type(TransactionType.EXPENSE)
                 .description("description")

@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Category with id: {} saved", category.getId());
         log.debug("Category: {} saved", category);
 
-        return mapToCategoryResponse(category);
+        return CategoryService.mapToCategoryResponse(category);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Category with id: {} updated", id);
         log.debug("Category: {} updated", request);
 
-        return mapToCategoryResponse(category);
+        return CategoryService.mapToCategoryResponse(category);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
         List<Category> categories = repository.findAll();
 
         log.info("all CategoryResponse returned");
-        return categories.stream().map(this::mapToCategoryResponse).toList();
+        return categories.stream().map(CategoryService::mapToCategoryResponse).toList();
     }
 
     @Override
@@ -90,7 +90,7 @@ public class CategoryServiceImpl implements CategoryService {
         String errorMessage = "Such Category not in database";
         Category category = repository.findById(id).
                 orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
-        CategoryResponse categoryResponse = mapToCategoryResponse(category);
+        CategoryResponse categoryResponse = CategoryService.mapToCategoryResponse(category);
 
         log.debug("CategoryResponse: {} returned", categoryResponse);
         log.info("CategoryResponse with id: {} returned", id);
@@ -144,13 +144,5 @@ public class CategoryServiceImpl implements CategoryService {
         return response;
     }
 
-    private CategoryResponse mapToCategoryResponse(Category category) {
-        return CategoryResponse.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .dateCreated(category.getDateCreated())
-                .transactionType(category.getTransactionType())
-                .build();
-    }
 
 }

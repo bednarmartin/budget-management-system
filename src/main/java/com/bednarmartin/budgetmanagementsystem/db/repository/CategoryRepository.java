@@ -1,5 +1,6 @@
 package com.bednarmartin.budgetmanagementsystem.db.repository;
 
+import com.bednarmartin.budgetmanagementsystem.annotations.LogMethod;
 import com.bednarmartin.budgetmanagementsystem.db.model.Category;
 import com.bednarmartin.budgetmanagementsystem.db.model.enums.TransactionType;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse;
@@ -13,10 +14,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
+    @LogMethod
     Optional<Category> findByName(String name);
 
+    @LogMethod
     void deleteByName(String name);
 
+    @LogMethod
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Category SET name = :name, dateUpdated = :datetime, transactionType = :transaction_type  WHERE id = :id")
     void updateCategoryById(@Param("id") long id,
@@ -24,6 +28,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
                             @Param("transaction_type") TransactionType type,
                             @Param("datetime") LocalDateTime dateTime);
 
+    @LogMethod
     @Query("""
             SELECT
             new com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse(c, SUM(t.amount))
@@ -33,6 +38,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             """)
     List<AmountSumByCategoryResponse> getAllAmountSumsByCategory();
 
+    @LogMethod
     @Query("""
             SELECT
             new com.bednarmartin.budgetmanagementsystem.service.api.response.AmountSumByCategoryResponse(c, SUM(t.amount))

@@ -2,8 +2,8 @@ package com.bednarmartin.budgetmanagementsystem.db.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +15,10 @@ import org.springframework.lang.NonNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "account_types")
 public class AccountType {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
     @NonNull
     private String name;

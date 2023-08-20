@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Table(name = "categories")
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
     @NonNull
     private String name;

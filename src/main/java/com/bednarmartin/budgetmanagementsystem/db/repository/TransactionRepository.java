@@ -1,5 +1,6 @@
 package com.bednarmartin.budgetmanagementsystem.db.repository;
 
+import com.bednarmartin.budgetmanagementsystem.annotations.LogMethod;
 import com.bednarmartin.budgetmanagementsystem.db.model.Account;
 import com.bednarmartin.budgetmanagementsystem.db.model.Category;
 import com.bednarmartin.budgetmanagementsystem.db.model.Transaction;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
+    @LogMethod
     @Modifying(clearAutomatically = true)
     @Query("""
             UPDATE Transaction SET amount = :amount, description = :description, category = :category, type = :type,

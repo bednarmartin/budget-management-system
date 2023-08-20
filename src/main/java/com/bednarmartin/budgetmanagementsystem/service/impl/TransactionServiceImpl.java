@@ -1,5 +1,6 @@
 package com.bednarmartin.budgetmanagementsystem.service.impl;
 
+import com.bednarmartin.budgetmanagementsystem.annotations.LogMethod;
 import com.bednarmartin.budgetmanagementsystem.db.model.Account;
 import com.bednarmartin.budgetmanagementsystem.db.model.Category;
 import com.bednarmartin.budgetmanagementsystem.db.model.Transaction;
@@ -10,7 +11,9 @@ import com.bednarmartin.budgetmanagementsystem.service.api.AccountService;
 import com.bednarmartin.budgetmanagementsystem.service.api.CategoryService;
 import com.bednarmartin.budgetmanagementsystem.service.api.TransactionService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateTransactionRequest;
+import com.bednarmartin.budgetmanagementsystem.service.api.request.mapper.RequestObjectMapper;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.TransactionResponse;
+import com.bednarmartin.budgetmanagementsystem.service.api.response.mapper.ResponseObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,10 +33,14 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final AccountService accountService;
 
+    private final ResponseObjectMapper responseObjectMapper;
+
+    private final RequestObjectMapper requestObjectMapper;
+    private final String errorMessage = "Such Transaction not in database";
+
+    @LogMethod
     @Override
     public TransactionResponse addTransaction(CreateTransactionRequest request) {
-        log.debug("addTransaction with parameter: {} called", request);
-
         Category category = categoryService.getCategoryByName(request.getCategoryName());
         Account account = accountService.getAccountByName(request.getAccountName());
 
@@ -52,22 +59,15 @@ public class TransactionServiceImpl implements TransactionService {
                 .account(account)
                 .build();
         repository.save(transaction);
-
-        log.info("Transaction with id: {} saved", transaction.getId());
-        log.debug("Transaction: {} saved", transaction);
-
-        return TransactionService.mapTransactionResponse(transaction);
+        return responseObjectMapper.mapToTransactionResponse(transaction);
 
     }
 
+    @LogMethod
     @Override
     public TransactionResponse updateTransaction(long id, CreateTransactionRequest request) {
-        log.debug("updateTransaction with parameters: {}, {} called", id, request);
-
         Category category = categoryService.getCategoryByName(request.getCategoryName());
         Account account = accountService.getAccountByName(request.getAccountName());
-
-        String errorMessage = "Such Transaction not in database";
         Transaction transaction = repository.findById(id).orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
 
         BigDecimal originalBalance = transaction.getAmount();
@@ -78,7 +78,7 @@ public class TransactionServiceImpl implements TransactionService {
             default -> throw new IllegalArgumentException();
         }
         account.setBalance(newBalance);
-        accountService.updateAccount(account.getId(), AccountService.mapToUpdateAccountRequest(account));
+        accountService.updateAccount(account.getId(), requestObjectMapper.mapToUpdateAccountRequest(account));
 
         checkTransactionTypes(request, category);
 
@@ -92,18 +92,12 @@ public class TransactionServiceImpl implements TransactionService {
                 actualTime);
 
         transaction = repository.findById(id).orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
-
-        log.info("Transaction with id: {} updated", id);
-        log.debug("Transaction: {} updated", request);
-
-        return TransactionService.mapTransactionResponse(transaction);
+        return responseObjectMapper.mapToTransactionResponse(transaction);
     }
 
+    @LogMethod
     @Override
     public void deleteTransactionById(long id) {
-        log.debug("deleteTransactionById with parameter: {} called", id);
-
-        String errorMessage = "Such Transaction not in database";
         Transaction transaction = repository.findById(id).orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
         Account account = transaction.getAccount();
 
@@ -115,44 +109,32 @@ public class TransactionServiceImpl implements TransactionService {
         }
         account.setBalance(newBalance);
 
-        accountService.updateAccount(account.getId(), AccountService.mapToUpdateAccountRequest(account));
+        accountService.updateAccount(account.getId(), requestObjectMapper.mapToUpdateAccountRequest(account));
         repository.deleteById(id);
-
-        log.info("Transaction with id: {} deleted", id);
     }
 
+    @LogMethod
     @Override
     public List<TransactionResponse> getAllTransactions() {
-        log.debug("getAllTransactions called");
-
         List<Transaction> transactions = repository.findAll();
-
-        log.info("all TransactionResponses returned");
-        return transactions.stream().map(TransactionService::mapTransactionResponse).toList();
+        return transactions.stream().map(responseObjectMapper::mapToTransactionResponse).toList();
     }
 
+    @LogMethod
     @Override
     public TransactionResponse getTransactionById(long id) {
-        log.debug("getTransactionById with parameter: {} called", id);
-
-        String errorMessage = "Such Transaction not in database";
         Transaction transaction = repository.findById(id).orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
-        TransactionResponse transactionResponse = TransactionService.mapTransactionResponse(transaction);
-
-        log.debug("TransactionResponse: {} returned", transactionResponse);
-        log.info("TransactionResponse with id: {} returned", id);
-
-        return transactionResponse;
+        return responseObjectMapper.mapToTransactionResponse(transaction);
     }
 
-
+    @LogMethod
     private void checkTransactionTypes(CreateTransactionRequest createTransactionRequest, Category category) {
         boolean notSameTransactionTypes = !category.getTransactionType().equals(createTransactionRequest.getType());
         if (notSameTransactionTypes) {
             throw new TransactionTypeMismatchException("Transaction types of request and category must be the same!");
         }
     }
-
+    @LogMethod
     private void updateAccountBalance(CreateTransactionRequest request, Account account) {
         switch (request.getType()) {
             case INCOME -> accountService.addToBalance(account, request.getAmount());

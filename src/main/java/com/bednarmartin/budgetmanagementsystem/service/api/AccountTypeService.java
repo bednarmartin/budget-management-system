@@ -25,13 +25,4 @@ public interface AccountTypeService {
     @Transactional
     void deleteAccountTypeByName(String name);
 
-    static AccountTypeResponse mapToAccountTypeResponse(AccountType accountType) {
-        return AccountTypeResponse.builder()
-                .id(accountType.getId())
-                .name(accountType.getName())
-                .build();
-    }
-
-
-
 }

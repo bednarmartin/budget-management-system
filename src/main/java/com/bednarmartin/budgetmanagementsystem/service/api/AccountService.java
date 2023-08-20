@@ -1,5 +1,6 @@
 package com.bednarmartin.budgetmanagementsystem.service.api;
 
+import com.bednarmartin.budgetmanagementsystem.annotations.LogMethod;
 import com.bednarmartin.budgetmanagementsystem.db.model.Account;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateAccountRequest;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface AccountService {
+
     AccountResponse addAccount(CreateAccountRequest request);
 
     @Transactional
@@ -17,32 +19,21 @@ public interface AccountService {
 
     void deleteAccountById(long id);
 
+    @LogMethod
     AccountResponse getAccountById(long id);
 
+    @LogMethod
     List<AccountResponse> getAllAccounts();
 
+    @LogMethod
     Account getAccountByName(String name);
 
+    @LogMethod
     @Transactional
     void subtractFromBalance(Account account, BigDecimal amount);
 
+    @LogMethod
     @Transactional
     void addToBalance(Account account, BigDecimal amount);
-
-    static AccountResponse mapToAccountResponse(Account account) {
-        return AccountResponse.builder()
-                .id(account.getId())
-                .name(account.getName())
-                .accountType(account.getAccountType())
-                .balance(account.getBalance())
-                .build();
-    }
-
-    static UpdateAccountRequest mapToUpdateAccountRequest(Account account) {
-        return UpdateAccountRequest.builder()
-                .name(account.getName())
-                .accountTypeName(account.getAccountType().getName())
-                .build();
-    }
 
 }

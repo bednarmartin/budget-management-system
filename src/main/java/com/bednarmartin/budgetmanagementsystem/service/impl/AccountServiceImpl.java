@@ -1,5 +1,6 @@
 package com.bednarmartin.budgetmanagementsystem.service.impl;
 
+import com.bednarmartin.budgetmanagementsystem.annotations.LogMethod;
 import com.bednarmartin.budgetmanagementsystem.db.model.Account;
 import com.bednarmartin.budgetmanagementsystem.db.model.AccountType;
 import com.bednarmartin.budgetmanagementsystem.db.repository.AccountRepository;
@@ -9,6 +10,7 @@ import com.bednarmartin.budgetmanagementsystem.service.api.AccountTypeService;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.CreateAccountRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.request.UpdateAccountRequest;
 import com.bednarmartin.budgetmanagementsystem.service.api.response.AccountResponse;
+import com.bednarmartin.budgetmanagementsystem.service.api.response.mapper.ResponseObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,10 +27,12 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountTypeService accountTypeService;
 
+    private final ResponseObjectMapper responseObjectMapper;
+    private final String errorMessage = "Such Account not in database";
+
+    @LogMethod
     @Override
     public AccountResponse addAccount(CreateAccountRequest request) {
-        log.debug("addAccount with parameter: {} called", request);
-
         AccountType accountType = accountTypeService.getAccountTypeByName(request.getAccountTypeName());
 
         Account account = Account.builder()
@@ -36,83 +40,56 @@ public class AccountServiceImpl implements AccountService {
                 .accountType(accountType)
                 .balance(request.getInitialBalance())
                 .build();
-
         repository.save(account);
 
-        log.info("Account with id: {} saved", account.getId());
-        log.debug("Account: {} saved", account);
-
-        return AccountService.mapToAccountResponse(account);
+        return responseObjectMapper.mapToAccountResponse(account);
     }
 
+    @LogMethod
     @Override
     public AccountResponse updateAccount(long id, UpdateAccountRequest request) {
-        log.debug("updateAccount with parameters: {}, {} called", id, request);
-
-
         AccountType accountType = accountTypeService.getAccountTypeByName(request.getAccountTypeName());
         repository.updateAccountById(id, request.getName(), accountType);
 
-        String errorMessage = "Such Account not in database";
         Account account = repository.findById(id).
                 orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
 
-        log.info("Account with id: {} updated", id);
-        log.debug("Account: {} updated", request);
-
-        return AccountService.mapToAccountResponse(account);
+        return responseObjectMapper.mapToAccountResponse(account);
 
     }
 
+    @LogMethod
     @Override
     public void deleteAccountById(long id) {
-        log.debug("deleteAccountById with parameter: {} called", id);
         repository.deleteById(id);
-        log.info("Account with id: {} deleted", id);
     }
 
+    @LogMethod
     @Override
     public AccountResponse getAccountById(long id) {
-        log.debug("getAccountById with parameter: {} called", id);
-
-        String errorMessage = "Such Account not in database";
         Account account = repository.findById(id).
                 orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
-        AccountResponse accountResponse = AccountService.mapToAccountResponse(account);
 
-        log.debug("AccountResponse: {} returned", accountResponse);
-        log.info("AccountResponse with id: {} returned", id);
-
-        return accountResponse;
+        return responseObjectMapper.mapToAccountResponse(account);
     }
 
+    @LogMethod
     @Override
     public List<AccountResponse> getAllAccounts() {
-        log.debug("getAllAccounts called");
         List<Account> accounts = repository.findAll();
-
-        log.info("all AccountResponse returned");
-        return accounts.stream().map(AccountService::mapToAccountResponse).toList();
+        return accounts.stream().map(responseObjectMapper::mapToAccountResponse).toList();
     }
 
+    @LogMethod
     @Override
     public Account getAccountByName(String name) {
-        log.debug("getAccountByName with parameter: {} called", name);
-
-        String errorMessage = "Such Account not in database";
-        Account account = repository.findByName(name).
+        return repository.findByName(name).
                 orElseThrow(() -> new SuchElementNotInDatabaseException(errorMessage));
-
-        log.debug("Account: {} returned", account);
-        log.info("Account with id: {} returned", account.getId());
-
-        return account;
     }
 
+    @LogMethod
     @Override
     public void subtractFromBalance(Account account, BigDecimal amount) {
-        log.debug("subtractFromBalance with parameters: {}, {} called", account, amount);
-
         Account updatedAccount = Account.builder()
                 .id(account.getId())
                 .accountType(account.getAccountType())
@@ -120,15 +97,11 @@ public class AccountServiceImpl implements AccountService {
                 .balance(account.getBalance().subtract(amount))
                 .build();
         repository.save(updatedAccount);
-
-        log.info("Account with id: {} updated", updatedAccount.getId());
-        log.debug("Updated Account: {}", account);
     }
 
+    @LogMethod
     @Override
     public void addToBalance(Account account, BigDecimal amount) {
-        log.debug("addToBalance with parameters: {}, {} called", account, amount);
-
         Account updatedAccount = Account.builder()
                 .id(account.getId())
                 .accountType(account.getAccountType())
@@ -137,9 +110,6 @@ public class AccountServiceImpl implements AccountService {
                 .build();
 
         repository.save(updatedAccount);
-
-        log.info("Account with id: {} updated", updatedAccount.getId());
-        log.debug("Updated Account: {}", account);
     }
 
 }

@@ -30,12 +30,4 @@ public interface CategoryService {
 
     AmountSumByCategoryResponse getAmountSumByCategoryByCategoryName(String categoryName);
 
-    static CategoryResponse mapToCategoryResponse(Category category) {
-        return CategoryResponse.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .dateCreated(category.getDateCreated())
-                .transactionType(category.getTransactionType())
-                .build();
-    }
 }

@@ -1,5 +1,6 @@
 package com.bednarmartin.budgetmanagementsystem.db.repository;
 
+import com.bednarmartin.budgetmanagementsystem.annotations.LogMethod;
 import com.bednarmartin.budgetmanagementsystem.db.model.Account;
 import com.bednarmartin.budgetmanagementsystem.db.model.AccountType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
-
+    @LogMethod
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Account SET name = :name, accountType = :account_type WHERE id = :id")
     void updateAccountById(@Param("id") long id,

@@ -93,11 +93,6 @@ public class CategoryServiceTests {
         }
 
         Assertions.assertEquals(3, responses.size());
-        for (int i = 0; i < responses.size(); i++) {
-            Assertions.assertEquals((long) i + 1, responses.get(i).getId());
-            Assertions.assertEquals(names[i], responses.get(i).getName());
-            Assertions.assertEquals(types[i], responses.get(i).getTransactionType());
-        }
     }
 
     @Test

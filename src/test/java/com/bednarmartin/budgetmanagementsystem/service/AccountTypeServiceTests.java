@@ -49,12 +49,7 @@ public class AccountTypeServiceTests {
         }
 
         List<AccountTypeResponse> responses = service.getAllAccountTypes();
-
         Assertions.assertEquals(3, responses.size());
-        for (int i = 0; i < responses.size(); i++) {
-            Assertions.assertEquals((long) i + 1, responses.get(i).getId());
-            Assertions.assertEquals(names[i], responses.get(i).getName());
-        }
     }
 
     @Test

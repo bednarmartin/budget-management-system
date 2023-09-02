@@ -22,10 +22,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @AutoConfigureGraphQlTester
 public class AccountGraphqlControllerTests {
 
+    private final String accountTypeName = "Cash";
     @Autowired
     private GraphQlTester tester;
-
-    private final String accountTypeName = "Cash";
 
     @BeforeEach
     public void init() {

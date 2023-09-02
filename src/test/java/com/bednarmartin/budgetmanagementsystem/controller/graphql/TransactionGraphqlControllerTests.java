@@ -23,15 +23,12 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @AutoConfigureGraphQlTester
 public class TransactionGraphqlControllerTests {
 
+    private final String accountTypeName = "Cash";
+    private final String accountName = "Wallet";
+    private final BigDecimal initialBalance = BigDecimal.valueOf(12.56);
+    String categoryName = "Groceries";
     @Autowired
     private GraphQlTester tester;
-
-    private final String accountTypeName = "Cash";
-
-    private final String accountName = "Wallet";
-    String categoryName = "Groceries";
-
-    private final BigDecimal initialBalance = BigDecimal.valueOf(12.56);
 
     @BeforeEach
     public void init() {

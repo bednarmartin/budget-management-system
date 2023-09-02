@@ -20,10 +20,14 @@ public class Account {
     @Id
     @GeneratedValue
     private Long id;
+
     @NonNull
+    @Column(unique = true)
     private String name;
+
     @NonNull
     private BigDecimal balance;
+
     @NonNull
     @ManyToOne
     @JoinColumn(name = "account_type_id", referencedColumnName = "id")

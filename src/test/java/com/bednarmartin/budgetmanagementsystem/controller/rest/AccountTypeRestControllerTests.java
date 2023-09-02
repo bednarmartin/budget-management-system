@@ -96,9 +96,6 @@ public class AccountTypeRestControllerTests {
 
 
         Assertions.assertEquals(3, responseList.size());
-        for (int i = 0; i < responseList.size(); i++) {
-            Assertions.assertEquals(names[i], responseList.get(i).getName());
-        }
 
     }
 

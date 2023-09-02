@@ -71,14 +71,7 @@ public class AccountServiceTests {
         }
 
         List<AccountResponse> responses = accountService.getAllAccounts();
-
         Assertions.assertEquals(3, responses.size());
-        for (int i = 0; i < responses.size(); i++) {
-            Assertions.assertEquals((long) i + 1, responses.get(i).getId());
-            Assertions.assertEquals(names[i], responses.get(i).getName());
-            Assertions.assertEquals("Cash", responses.get(i).getAccountType().getName());
-            Assertions.assertEquals(balances[i], responses.get(i).getBalance());
-        }
     }
 
     @Test

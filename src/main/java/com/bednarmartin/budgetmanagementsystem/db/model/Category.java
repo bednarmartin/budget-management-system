@@ -22,16 +22,16 @@ public class Category {
     @Id
     @GeneratedValue
     private Long id;
+
     @NonNull
+    @Column(unique = true)
     private String name;
+
     @NonNull
-    @Column(name = "transaction_type")
     private TransactionType transactionType;
     @NonNull
-    @Column(name = "date_created")
     private LocalDateTime dateCreated;
     @NonNull
-    @Column(name = "date_updated")
     private LocalDateTime dateUpdated;
 
     @Override

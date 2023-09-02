@@ -17,6 +17,7 @@ import com.bednarmartin.budgetmanagementsystem.service.api.response.mapper.Respo
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Service
+@Transactional
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository repository;
@@ -102,7 +104,7 @@ public class TransactionServiceImpl implements TransactionService {
         Account account = transaction.getAccount();
 
         BigDecimal newBalance;
-        switch (transaction.getType()){
+        switch (transaction.getType()) {
             case INCOME -> newBalance = account.getBalance().subtract(transaction.getAmount());
             case EXPENSE -> newBalance = account.getBalance().add(transaction.getAmount());
             default -> throw new IllegalArgumentException();
@@ -134,6 +136,7 @@ public class TransactionServiceImpl implements TransactionService {
             throw new TransactionTypeMismatchException("Transaction types of request and category must be the same!");
         }
     }
+
     @LogMethod
     private void updateAccountBalance(CreateTransactionRequest request, Account account) {
         switch (request.getType()) {

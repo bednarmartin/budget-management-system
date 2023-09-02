@@ -1,9 +1,6 @@
 package com.bednarmartin.budgetmanagementsystem.db.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.lang.NonNull;
@@ -22,7 +19,9 @@ public class AccountType {
     @Id
     @GeneratedValue
     private Long id;
+
     @NonNull
+    @Column(unique = true)
     private String name;
 
     @Override

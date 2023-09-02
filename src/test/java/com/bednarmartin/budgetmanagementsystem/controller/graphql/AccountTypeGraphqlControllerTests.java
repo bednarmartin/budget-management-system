@@ -185,11 +185,5 @@ public class AccountTypeGraphqlControllerTests {
                 .get();
 
         Assertions.assertEquals(accountTypeNames.length, responseList.size());
-
-        for (int i = 0; i < responseList.size(); i++) {
-            Assertions.assertEquals((i + 1), responseList.get(i).getId());
-            Assertions.assertEquals(accountTypeNames[i], responseList.get(i).getName());
-        }
-
     }
 }

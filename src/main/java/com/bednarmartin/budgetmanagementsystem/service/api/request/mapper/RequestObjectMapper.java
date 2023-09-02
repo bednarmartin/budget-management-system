@@ -12,7 +12,7 @@ public interface RequestObjectMapper {
 
     CategoryRequest mapToCategoryRequest(Category category);
 
-    CreateAccountRequest mapToCreateAccountRequest(Account account );
+    CreateAccountRequest mapToCreateAccountRequest(Account account);
 
     CreateTransactionRequest mapToCreateTransactionRequest(Transaction transaction);
 

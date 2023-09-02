@@ -180,14 +180,14 @@ public class CategoryGraphqlControllerTests {
         TransactionType[] transactionTypes = {EXPENSE, EXPENSE, INCOME};
         for (int i = 0; i < categoryNames.length; i++) {
             String createDocument = """
-                    mutation createCategory($name: String, $transactionType: TransactionType) {
-                     createCategory(request: {name: $name, transactionType: $transactionType}) {
-                       id
-                       name
-                       transactionType
-                     }
-                   }
-                    """;
+                     mutation createCategory($name: String, $transactionType: TransactionType) {
+                      createCategory(request: {name: $name, transactionType: $transactionType}) {
+                        id
+                        name
+                        transactionType
+                      }
+                    }
+                     """;
             tester.document(createDocument)
                     .variable("name", categoryNames[i])
                     .variable("transactionType", transactionTypes[i])

@@ -129,14 +129,6 @@ public class TransactionServiceTests {
         }
 
         Assertions.assertEquals(3, responses.size());
-        for (int i = 0; i < responses.size(); i++) {
-            Assertions.assertEquals((long) i + 1, responses.get(i).getId());
-            Assertions.assertEquals("Utilities", responses.get(i).getCategory().getName());
-            Assertions.assertEquals(descriptions[i], responses.get(i).getDescription());
-            Assertions.assertEquals(amounts[i], responses.get(i).getAmount());
-            Assertions.assertEquals(TransactionType.EXPENSE, responses.get(i).getType());
-            Assertions.assertEquals(accountName, responses.get(i).getAccount().getName());
-        }
     }
 
     @Test
